@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e74133cc-3d35-46ab-a22a-b1c1cfaca70a" name="Default Changelist" comment="" />
+    <list default="true" id="e74133cc-3d35-46ab-a22a-b1c1cfaca70a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +16,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1Yf40BUF6i37bhGgGpV4heStYhc" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -24,6 +29,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Project" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -40,9 +46,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../venv/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/venv/Lib" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -99,6 +105,7 @@
       <workItem from="1583332136333" duration="1757000" />
       <workItem from="1583334067247" duration="673000" />
       <workItem from="1583334753677" duration="5053000" />
+      <workItem from="1583419756051" duration="1306000" />
     </task>
     <servers />
   </component>
@@ -106,22 +113,34 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1237" height="132" key="GridCell.Tab.0.bottom" timestamp="1583408238130">
-      <screen x="0" y="0" width="1280" height="720" />
+    <state x="571" y="53" width="767" height="944" key="#main" timestamp="1583419781070">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="571" y="53" width="767" height="944" key="#main/0.0.1920.1080@0.0.1920.1080" timestamp="1583419781070" />
+    <state x="685" y="209" width="530" height="640" key="FileChooserDialogImpl" timestamp="1583423643672">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="685" y="209" width="530" height="640" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1583423643672" />
+    <state width="1864" height="284" key="GridCell.Tab.0.bottom" timestamp="1583423644644">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1237" height="132" key="GridCell.Tab.0.bottom/0.0.1280.720@0.0.1280.720" timestamp="1583408238130" />
-    <state width="1237" height="132" key="GridCell.Tab.0.center" timestamp="1583408238129">
-      <screen x="0" y="0" width="1280" height="720" />
+    <state width="1864" height="284" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1583423644644" />
+    <state width="1864" height="284" key="GridCell.Tab.0.center" timestamp="1583423644644">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1237" height="132" key="GridCell.Tab.0.center/0.0.1280.720@0.0.1280.720" timestamp="1583408238129" />
-    <state width="1237" height="132" key="GridCell.Tab.0.left" timestamp="1583408238129">
-      <screen x="0" y="0" width="1280" height="720" />
+    <state width="1864" height="284" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1583423644644" />
+    <state width="1864" height="284" key="GridCell.Tab.0.left" timestamp="1583423644644">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1237" height="132" key="GridCell.Tab.0.left/0.0.1280.720@0.0.1280.720" timestamp="1583408238129" />
-    <state width="1237" height="132" key="GridCell.Tab.0.right" timestamp="1583408238130">
-      <screen x="0" y="0" width="1280" height="720" />
+    <state width="1864" height="284" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1583423644644" />
+    <state width="1864" height="284" key="GridCell.Tab.0.right" timestamp="1583423644644">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1237" height="132" key="GridCell.Tab.0.right/0.0.1280.720@0.0.1280.720" timestamp="1583408238130" />
+    <state width="1864" height="284" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1583423644644" />
     <state width="597" height="223" key="GridCell.Tab.1.bottom" timestamp="1583327144187">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
@@ -146,10 +165,11 @@
       <screen x="0" y="0" width="1280" height="720" />
     </state>
     <state x="337" y="185" key="com.intellij.ide.util.TipDialog/0.0.1280.720@0.0.1280.720" timestamp="1583334756733" />
-    <state x="303" y="41" width="672" height="678" key="search.everywhere.popup" timestamp="1583339026170">
-      <screen x="0" y="0" width="1280" height="720" />
+    <state x="455" y="62" width="1008" height="1017" key="search.everywhere.popup" timestamp="1583419814949">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="303" y="41" width="672" height="678" key="search.everywhere.popup/0.0.1280.720@0.0.1280.720" timestamp="1583339026170" />
+    <state x="455" y="62" width="1008" height="1017" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1583419814949" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -162,7 +182,8 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Project$projectMain.coverage" NAME="projectMain Coverage Results" MODIFIED="1583335277116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/venv/Lib" />
     <SUITE FILE_PATH="coverage/Project$main.coverage" NAME="main Coverage Results" MODIFIED="1583408238101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/venv/Lib" />
+    <SUITE FILE_PATH="coverage/Project$projectMain.coverage" NAME="projectMain Coverage Results" MODIFIED="1583335277116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/venv/Lib" />
+    <SUITE FILE_PATH="coverage/Project_graphics_py$main.coverage" NAME="main Coverage Results" MODIFIED="1583419781093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/venv/Lib" />
   </component>
 </project>
