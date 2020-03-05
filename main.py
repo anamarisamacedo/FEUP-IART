@@ -9,6 +9,8 @@ bubbles = pygame.sprite.Group()
 projectiles = pygame.sprite.Group()
 
 def checkCollisions():
+    #dictionary with bubbles and projectiles which collided
+    #this function also removes all colliding projectiles from the list
     ballsHit = groupcollide(bubbles, projectiles, False, True)
 
     for bubble in ballsHit.items():
@@ -24,16 +26,16 @@ def checkCollisions():
 
 
 #Project main loop
-def main():
+def game(startGrid):
     pygame.init()
-    win = pygame.display.set_mode((800, 800))
+    win = pygame.display.set_mode((len(startGrid[0])*100, len(startGrid)*100))
     pygame.display.set_caption("Bubble blast")
     run = True
 
     #create bubble list
-    for i in range(0, 5):
-        for j in range(0, 5):
-            bubbles.add(Bubble((100*i + 50, 100*j + 50), 4))
+    for i in range(0, len(startGrid[0])):
+        for j in range(0, len(startGrid)):
+            bubbles.add(Bubble((100*i + 50, 100*j + 50), startGrid[j][i]))
 
     while run:
         #check mouse events
@@ -80,4 +82,12 @@ def main():
 
     pygame.quit()
 
-main()
+
+startGrid = []
+startGrid.append([1, 2, 1, 1])
+startGrid.append([2, 1, 1, 2])
+startGrid.append([3, 1, 3, 3])
+startGrid.append([2, 1, 2, 1])
+
+
+game(startGrid)

@@ -1,15 +1,20 @@
 import pygame
 
+velocity = 0.3
+maxLevel = 4
+
 class Bubble(pygame.sprite.Sprite):
     def __init__(self, pos, level):
+        self.level = level
+        if level > maxLevel: self.level = maxLevel
+
         # sprite
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('assets/bubble' + str(level) + '.png')
+        self.image = pygame.image.load('assets/bubble' + str(self.level) + '.png')
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
 
         self.rect.center = pos
-        self.level = level
 
     # returns projectiles if bubble dies
     def hit(self):
@@ -47,16 +52,16 @@ class Projectile(pygame.sprite.Sprite):
 
     def update(self):
         if self.direction == "up":
-            self.y += 0.5
+            self.y += velocity
 
         elif self.direction == "down":
-            self.y -= 0.5
+            self.y -= velocity
 
         elif self.direction == "left":
-            self.x -= 0.5
+            self.x -= velocity
 
         else:
-            self.x += 0.5
+            self.x += velocity
 
         self.rect.center = (self.x, self.y)
 
