@@ -85,6 +85,8 @@ def game(startGrid):
 
 startGrid = []
 startGrid.append([1, 2, 1, 1])
+startGrid.append([1, 2, 1, 1])
+startGrid.append([1, 2, 1, 1])
 startGrid.append([2, 1, 1, 2])
 startGrid.append([3, 1, 3, 3])
 startGrid.append([2, 1, 2, 1])
