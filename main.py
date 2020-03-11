@@ -30,14 +30,36 @@ def game(startGrid):
     pygame.init()
     win = pygame.display.set_mode((len(startGrid[0])*100, len(startGrid)*100))
     pygame.display.set_caption("Bubble blast")
+
+    smallfont = pygame.font.SysFont("Arial", 25)
+
     run = True
 
     #create bubble list
     for i in range(0, len(startGrid[0])):
         for j in range(0, len(startGrid)):
             bubbles.add(Bubble((100*i + 50, 100*j + 50), startGrid[j][i]))
-
+    intro = True
     while run:
+
+        while intro:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_c:
+                        intro = False
+
+            win.fill((0,0,0))
+            textSurf= smallfont.render("Press C to play human mode.", True, (255,255,255))
+            textRect = textSurf.get_rect()
+            textRect.center = (len(startGrid[0])*100 / 2), (len(startGrid)*100 / 2)
+            win.blit(textSurf, textRect)
+
+            pygame.display.update()
+
         #check mouse events
         for event in pygame.event.get():
 
