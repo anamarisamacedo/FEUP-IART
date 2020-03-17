@@ -113,8 +113,7 @@ def game(startGrid, touchesLeft):
                             touchesLeft -= 1
 
                             if touchesLeft < 0:
-                                # writeToScreen((windowWidth/2, windowHeight/2), "Game over :(", True)
-                                writeToScreen((200, 200), "Game over :(", True)
+                                writeToScreen((windowWidth/2, windowHeight/2), "Game over :(", True)
                                 gameOver = True
                                 break
 
@@ -128,11 +127,18 @@ def game(startGrid, touchesLeft):
                                 projectiles.add(newExplosion[0][2])
                                 projectiles.add(newExplosion[0][3])
 
+
+            if len(bubbles) == 0:
+                writeToScreen((windowWidth/2, windowHeight/2), "You won! :D", True)
+                gameOver = True
+
+
             # update whole screen
             pygame.display.flip()
 
             # fill background
             win.fill((0, 0, 0))
+
 
         # check mouse events
         for event in pygame.event.get():
