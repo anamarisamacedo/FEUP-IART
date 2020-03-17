@@ -6,6 +6,7 @@ maxLevel = 4
 class Bubble(pygame.sprite.Sprite):
     def __init__(self, pos, level):
         self.level = level
+        self.score = 10
         if level > maxLevel: self.level = maxLevel
 
         # sprite
