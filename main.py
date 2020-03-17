@@ -32,20 +32,20 @@ def checkCollisions():
     # dictionary with bubbles and projectiles which collided
     # this function also removes all colliding projectiles from the list
     ballsHit = groupcollide(bubbles, projectiles, False, True)
-    ballsHExploded = 0
+    scoreAddition = 0
 
     for bubble in ballsHit.items():
         newExplosion = bubble[0].hit()
 
         if newExplosion != None:
+            scoreAddition += bubble[0].score
             bubbles.remove(bubble[0])
-            ballsHExploded += 1
             projectiles.add(newExplosion[0][0])
             projectiles.add(newExplosion[0][1])
             projectiles.add(newExplosion[0][2])
             projectiles.add(newExplosion[0][3])
 
-    return ballsHExploded
+    return scoreAddition
 
 
 # Project main loop
@@ -84,8 +84,8 @@ def game(startGrid, touchesLeft):
             bubbles.update()
             projectiles.update()
 
-            # check collisions between projectiles and bubbles
-            score += 10*checkCollisions()
+            # check collisions between projectiles and bubbles. update score
+            score += checkCollisions()
 
             # draw all entities
             writeToScreen((windowWidth / 2, 20), "Score: " + str(score), False)
