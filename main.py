@@ -10,8 +10,6 @@ bubbles = pygame.sprite.Group()
 # explosions when bubble dies
 projectiles = pygame.sprite.Group()
 
-# global score
-score = 0
 
 windowWidth = 400
 windowHeight = 600
@@ -34,19 +32,20 @@ def checkCollisions():
     # dictionary with bubbles and projectiles which collided
     # this function also removes all colliding projectiles from the list
     ballsHit = groupcollide(bubbles, projectiles, False, True)
-    global score
+    ballsHExploded = 0
 
     for bubble in ballsHit.items():
         newExplosion = bubble[0].hit()
 
         if newExplosion != None:
-            score += bubble[0].score
             bubbles.remove(bubble[0])
-
+            ballsHExploded += 1
             projectiles.add(newExplosion[0][0])
             projectiles.add(newExplosion[0][1])
             projectiles.add(newExplosion[0][2])
             projectiles.add(newExplosion[0][3])
+
+    return ballsHExploded
 
 
 # Project main loop
@@ -54,7 +53,7 @@ def game(startGrid, touchesLeft):
     pygame.init()
     pygame.display.set_caption("Bubble blast")
 
-    global score
+    score = 0
     gameOver = False
 
     # create bubble list
@@ -86,7 +85,7 @@ def game(startGrid, touchesLeft):
             projectiles.update()
 
             # check collisions between projectiles and bubbles
-            checkCollisions()
+            score += 10*checkCollisions()
 
             # draw all entities
             writeToScreen((windowWidth / 2, 20), "Score: " + str(score), False)
