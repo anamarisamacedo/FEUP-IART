@@ -62,6 +62,8 @@ def game(startGrid, touchesLeft):
             bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), startGrid[j][i]))
 
     intro = run = True
+    human = False
+    computer = False
     while run:
 
         while intro:
@@ -71,14 +73,19 @@ def game(startGrid, touchesLeft):
                     quit()
 
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_h:
+                        human = True
+                        intro = False
                     if event.key == pygame.K_c:
+                        computer = True
                         intro = False
 
-            writeToScreen(((len(startGrid[0]) * 100 / 2), (len(startGrid) * 100 / 2)), "Press C to play human mode.", True)
+
+            writeToScreen(((len(startGrid[0]) * 100 / 2), (len(startGrid) * 100 / 2)), "Press H to play in human mode. Press C to play in computer mode", True)
 
             pygame.display.flip()
 
-        while(not gameOver):
+        while(not gameOver and human):
 
             # update bubbles, projectiles
             bubbles.update()
@@ -138,6 +145,22 @@ def game(startGrid, touchesLeft):
             # fill background
             win.fill((0, 0, 0))
 
+        while(computer):
+
+            writeToScreen((windowWidth / 2, windowHeight/2), "Press A to BFS algorithm", False)
+
+            for event in pygame.event.get():
+
+                # check mouse click on exit button
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                    
+            # update whole screen
+            pygame.display.flip()
+
+            # fill background
+            win.fill((0, 0, 0))
 
         # check mouse events
         for event in pygame.event.get():
