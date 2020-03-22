@@ -61,7 +61,7 @@ class Projectile(pygame.sprite.Sprite):
         elif self.direction == "left":
             self.x -= velocity
 
-        else:
+        elif self.direction == "right":
             self.x += velocity
 
         self.rect.center = (self.x, self.y)
