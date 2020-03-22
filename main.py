@@ -27,18 +27,7 @@ def playHuman():
 
     while (not gameOver):
 
-        # update bubbles, projectiles
-        bubbles.update()
-        projectiles.update()
-
-        # check collisions between projectiles and bubbles. update score
-        score += checkCollisions()
-
-        # draw all entities
-        writeToScreen((center[0], 20), "Score: " + str(score), False)
-        writeToScreen((center[0], windowHeight + 50), "Touches left: " + str(touchesLeft), False)
-        bubbles.draw(win)
-        projectiles.draw(win)
+        update(win)
 
         # avoid clicking before move ends
         if len(projectiles) <= 0:
@@ -132,8 +121,6 @@ def playComputer():
 
         # fill background
         win.fill((0, 0, 0))
-
-    return
 
 
 def update(win):
@@ -279,6 +266,9 @@ def game(startGrid, touches):
     global touchesLeft
     touchesLeft = touches
 
+
+    gameOver = False
+
     # create bubble list
     for i in range(0, len(startGrid[0])):
         for j in range(0, len(startGrid)):
@@ -307,6 +297,7 @@ def game(startGrid, touches):
                         computer = True
 
                     intro = False
+
 
 
         if(human):
@@ -339,7 +330,7 @@ startGrid.append([0, 0, 1, 1, 0])
 startGrid.append([0, 0, 2, 1, 0])
 startGrid.append([0, 0, 0, 0, 0])
 startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
 
 
 game(startGrid, touchesLeft)
