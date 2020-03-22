@@ -199,6 +199,7 @@ def game(startGrid, touchesLeft):
             if len(bubbles) == 0:
                 writeToScreen(center, "You won! :D", True)
                 gameOver = True
+                run = False
 
 
             # update whole screen
@@ -216,6 +217,7 @@ def game(startGrid, touchesLeft):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    exit()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
@@ -226,24 +228,32 @@ def game(startGrid, touchesLeft):
 
 
 
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+
+
 
 
 touchesLeft = 3
 startGrid = []
 
-startGrid.append([1, 1, 1, 1, 1])
-startGrid.append([4, 2, 3, 1, 2])
-startGrid.append([2, 1, 4, 1, 2])
-startGrid.append([3, 0, 1, 3, 0])
-startGrid.append([2, 1, 0, 4, 3])
-startGrid.append([0, 3, 2, 3, 1])
+# startGrid.append([1, 1, 1, 1, 1])
+# startGrid.append([4, 2, 3, 1, 2])
+# startGrid.append([2, 1, 4, 1, 2])
+# startGrid.append([3, 0, 1, 3, 0])
+# startGrid.append([2, 1, 0, 4, 3])
+# startGrid.append([0, 3, 2, 3, 1])
 
-# startGrid.append([0, 0, 0, 0, 0])
-# startGrid.append([0, 0, 1, 1, 0])
-# startGrid.append([0, 0, 2, 1, 0])
-# startGrid.append([0, 0, 0, 0, 0])
-# startGrid.append([0, 0, 0, 0, 0])
-# startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 1, 1, 0])
+startGrid.append([0, 0, 2, 1, 0])
+startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 0, 0, 0])
 
 
 game(startGrid, touchesLeft)
