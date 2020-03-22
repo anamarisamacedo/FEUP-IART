@@ -88,12 +88,17 @@ def checkCollisions():
     ballsHit = groupcollide(bubbles, projectiles, False, True)
     scoreAddition = 0
 
-    for bubble in ballsHit.items():
-        newExplosion = bubble[0].hit()
+    for bubble in ballsHit.keys():
+
+        #fix case when bubble is hit multiple times simultaneously
+        for hit in range (0, len(ballsHit[bubble])-1):
+            bubble.hit()
+
+        newExplosion = bubble.hit()
 
         if newExplosion != None:
-            scoreAddition += bubble[0].score
-            bubbles.remove(bubble[0])
+            scoreAddition += bubble.score*len(ballsHit[bubble])
+            bubbles.remove(bubble)
             projectiles.add(newExplosion[0][0])
             projectiles.add(newExplosion[0][1])
             projectiles.add(newExplosion[0][2])
@@ -232,5 +237,13 @@ startGrid.append([2, 1, 4, 1, 2])
 startGrid.append([3, 0, 1, 3, 0])
 startGrid.append([2, 1, 0, 4, 3])
 startGrid.append([0, 3, 2, 3, 1])
+
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 1, 1, 0])
+# startGrid.append([0, 0, 2, 1, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+
 
 game(startGrid, touchesLeft)
