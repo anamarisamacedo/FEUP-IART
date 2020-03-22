@@ -1,6 +1,6 @@
 import pygame
 
-velocity = 0.3
+velocity = 0.5
 maxLevel = 4
 
 class Bubble(pygame.sprite.Sprite):

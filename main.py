@@ -2,19 +2,73 @@ from pygame.sprite import groupcollide
 
 from bubble import *
 
-import time
-
 # level bubbles
 bubbles = pygame.sprite.Group()
 
 # explosions when bubble dies
 projectiles = pygame.sprite.Group()
 
+rowNr = 6
+colNr = 5
 
-windowWidth = 400
-windowHeight = 600
+windowWidth = 100*colNr
+windowHeight = 100*rowNr
+
+center = (windowWidth/2, windowHeight/2)
 scoreVerticalSpace = 80
 win = pygame.display.set_mode((windowWidth, windowHeight + scoreVerticalSpace))
+
+def clickBubble(grid, pos):
+    row = pos[0]
+    col = pos[1]
+
+    grid[row][col] -= 1
+
+    if grid[row][col] > 0:
+        return grid
+
+    else:
+        #burst bubble above
+        for i in range(row-1, -1, -1):
+            if grid[i][col] > 0:
+                #explode next bubble
+                grid = clickBubble(grid, (i, col))
+                break
+
+        # burst bubble below
+        for i in range(row, rowNr):
+            if grid[i][col] > 0:
+                # explode next bubble
+                grid = clickBubble(grid, (i, col))
+                break
+
+        #burst bubble left
+        for i in range(col-1, -1, -1):
+            if grid[row][i] > 0:
+                # explode next bubble
+                grid = clickBubble(grid, (row, i))
+                break
+
+        # burst bubble right
+        for i in range(col, colNr):
+            if grid[row][i] > 0:
+                # explode next bubble
+                grid = clickBubble(grid, (row, i))
+                break
+
+        return grid
+
+#currently just for testing, makes a predefined move
+def BFS(grid):
+    print('\n'.join([''.join(['{:4}'.format(item) for item in row])
+                     for row in grid]))
+
+    print("\n")
+
+    grid = clickBubble(grid, (1, 3))
+
+    print('\n'.join([''.join(['{:4}'.format(item) for item in row])
+                     for row in grid]))
 
 
 def writeToScreen(pos, text, clearScreen):
@@ -59,18 +113,25 @@ def game(startGrid, touchesLeft):
     # create bubble list
     for i in range(0, len(startGrid[0])):
         for j in range(0, len(startGrid)):
-            bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), startGrid[j][i]))
+            if startGrid[j][i] > 0:
+                bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), startGrid[j][i]))
 
     intro = run = True
-    human = False
-    computer = False
+    computer = human = False
+
     while run:
 
+        writeToScreen(center, "Press H to play in human mode. ", True)
+        writeToScreen((center[0], center[1] + 30), "Press C to play in computer mode. ", False)
+
+        pygame.display.flip()
+
+
+        #MAIN MENU
         while intro:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_h:
@@ -81,10 +142,7 @@ def game(startGrid, touchesLeft):
                         intro = False
 
 
-            writeToScreen(((len(startGrid[0]) * 100 / 2), (len(startGrid) * 100 / 2)), "Press H to play in human mode. Press C to play in computer mode", True)
-
-            pygame.display.flip()
-
+        #HUMAN MODE
         while(not gameOver and human):
 
             # update bubbles, projectiles
@@ -95,13 +153,12 @@ def game(startGrid, touchesLeft):
             score += checkCollisions()
 
             # draw all entities
-            writeToScreen((windowWidth / 2, 20), "Score: " + str(score), False)
+            writeToScreen((center[0], 20), "Score: " + str(score), False)
 
-            writeToScreen((windowWidth / 2, windowHeight + 50), "Touches left: " + str(touchesLeft), False)
+            writeToScreen((center[0], windowHeight + 50), "Touches left: " + str(touchesLeft), False)
 
             bubbles.draw(win)
             projectiles.draw(win)
-
             # check mouse events
             for event in pygame.event.get():
 
@@ -119,7 +176,7 @@ def game(startGrid, touchesLeft):
                             touchesLeft -= 1
 
                             if touchesLeft < 0:
-                                writeToScreen((windowWidth/2, windowHeight/2), "Game over :(", True)
+                                writeToScreen(center, "Game over :(", True)
                                 gameOver = True
                                 break
 
@@ -135,7 +192,7 @@ def game(startGrid, touchesLeft):
 
 
             if len(bubbles) == 0:
-                writeToScreen((windowWidth/2, windowHeight/2), "You won! :D", True)
+                writeToScreen(center, "You won! :D", True)
                 gameOver = True
 
 
@@ -145,40 +202,35 @@ def game(startGrid, touchesLeft):
             # fill background
             win.fill((0, 0, 0))
 
+
+        #COMPUTER MODE
         while(computer):
 
-            writeToScreen((windowWidth / 2, windowHeight/2), "Press A to BFS algorithm", False)
+            writeToScreen(center, "Press A to BFS algorithm", True)
 
             for event in pygame.event.get():
-
-                # check mouse click on exit button
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
-                    
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        startGrid = BFS(startGrid)
+
             # update whole screen
             pygame.display.flip()
 
-            # fill background
-            win.fill((0, 0, 0))
 
-        # check mouse events
-        for event in pygame.event.get():
-
-            # check mouse click on exit button
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
 
 
 
 touchesLeft = 3
 startGrid = []
-startGrid.append([1, 2, 2, 1])
-startGrid.append([1, 2, 1, 1])
-startGrid.append([1, 2, 4, 1])
-startGrid.append([2, 1, 1, 2])
-startGrid.append([3, 4, 3, 3])
-startGrid.append([2, 1, 2, 1])
+
+startGrid.append([1, 1, 1, 1, 1])
+startGrid.append([4, 2, 3, 1, 2])
+startGrid.append([2, 1, 4, 1, 2])
+startGrid.append([3, 0, 1, 3, 0])
+startGrid.append([2, 1, 0, 4, 3])
+startGrid.append([0, 3, 2, 3, 1])
 
 game(startGrid, touchesLeft)
