@@ -2,6 +2,8 @@ from pygame.sprite import groupcollide
 
 from bubble import *
 
+from time import *
+
 # level bubbles
 bubbles = pygame.sprite.Group()
 
@@ -10,14 +12,13 @@ projectiles = pygame.sprite.Group()
 
 rowNr = 6
 colNr = 5
-
 windowWidth = 100*colNr
 windowHeight = 100*rowNr
-
 center = (windowWidth/2, windowHeight/2)
 scoreVerticalSpace = 80
 win = pygame.display.set_mode((windowWidth, windowHeight + scoreVerticalSpace))
 
+#function for AI to generate moves
 def clickBubble(grid, pos):
     row = pos[0]
     col = pos[1]
@@ -70,7 +71,7 @@ def BFS(grid):
     print('\n'.join([''.join(['{:4}'.format(item) for item in row])
                      for row in grid]))
 
-
+#write text in the screen
 def writeToScreen(pos, text, clearScreen):
     if clearScreen:
         win.fill((0, 0, 0))
@@ -81,10 +82,9 @@ def writeToScreen(pos, text, clearScreen):
     textRect.center = pos
     win.blit(textSurf, textRect)
 
-
+#checks collision between sprites, removes projectiles which hit balls
 def checkCollisions():
     # dictionary with bubbles and projectiles which collided
-    # this function also removes all colliding projectiles from the list
     ballsHit = groupcollide(bubbles, projectiles, False, True)
     scoreAddition = 0
 
@@ -104,7 +104,28 @@ def checkCollisions():
             projectiles.add(newExplosion[0][2])
             projectiles.add(newExplosion[0][3])
 
+    #remove projectiles that leave screen
+    for projectile in projectiles:
+        if projectile.x < 0 or projectile.y < 0 or projectile.x > windowWidth or projectile.y > windowHeight:
+            projectiles.remove(projectile)
+
     return scoreAddition
+
+
+#animate a move
+def makeMove(bubble, score):
+    # if bubble is clicked, make it get hit and decrement touchesLeft
+    newExplosion = bubble.hit()
+
+    # if bubble dies, add explosions
+    if newExplosion != None:
+        score += bubble.score
+        bubbles.remove(bubble)
+
+        projectiles.add(newExplosion[0][0])
+        projectiles.add(newExplosion[0][1])
+        projectiles.add(newExplosion[0][2])
+        projectiles.add(newExplosion[0][3])
 
 
 # Project main loop
@@ -118,6 +139,7 @@ def game(startGrid, touchesLeft):
     # create bubble list
     for i in range(0, len(startGrid[0])):
         for j in range(0, len(startGrid)):
+            #dont create level 0 balls
             if startGrid[j][i] > 0:
                 bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), startGrid[j][i]))
 
@@ -125,12 +147,9 @@ def game(startGrid, touchesLeft):
     computer = human = False
 
     while run:
-
         writeToScreen(center, "Press H to play in human mode. ", True)
         writeToScreen((center[0], center[1] + 30), "Press C to play in computer mode. ", False)
-
         pygame.display.flip()
-
 
         #MAIN MENU
         while intro:
@@ -159,11 +178,10 @@ def game(startGrid, touchesLeft):
 
             # draw all entities
             writeToScreen((center[0], 20), "Score: " + str(score), False)
-
             writeToScreen((center[0], windowHeight + 50), "Touches left: " + str(touchesLeft), False)
-
             bubbles.draw(win)
             projectiles.draw(win)
+
             # check mouse events
             for event in pygame.event.get():
 
@@ -176,24 +194,25 @@ def game(startGrid, touchesLeft):
                 if event.type == pygame.MOUSEBUTTONUP:
                     for bubble in bubbles:
                         if bubble.rect.collidepoint(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
-                            # if bubble is clicked, make it get hit and decrement touchesLeft
-                            newExplosion = bubble.hit()
+
+                            makeMove(bubble, score)
                             touchesLeft -= 1
 
-                            if touchesLeft < 0:
-                                writeToScreen(center, "Game over :(", True)
-                                gameOver = True
-                                break
+                if touchesLeft <= 0:
+                    break
 
-                            # if bubble dies, add explosions
-                            if newExplosion != None:
-                                score += bubble.score
-                                bubbles.remove(bubble)
 
-                                projectiles.add(newExplosion[0][0])
-                                projectiles.add(newExplosion[0][1])
-                                projectiles.add(newExplosion[0][2])
-                                projectiles.add(newExplosion[0][3])
+            if touchesLeft <= 0 and len(projectiles) <= 0:
+                if len(bubbles) > 0:
+                    writeToScreen(center, "Game over :(", True)
+
+                else:
+                    writeToScreen(center, "You won!", True)
+
+                gameOver = True
+
+
+
 
 
             if len(bubbles) == 0:
@@ -241,19 +260,19 @@ def game(startGrid, touchesLeft):
 touchesLeft = 3
 startGrid = []
 
-# startGrid.append([1, 1, 1, 1, 1])
-# startGrid.append([4, 2, 3, 1, 2])
-# startGrid.append([2, 1, 4, 1, 2])
-# startGrid.append([3, 0, 1, 3, 0])
-# startGrid.append([2, 1, 0, 4, 3])
-# startGrid.append([0, 3, 2, 3, 1])
+startGrid.append([1, 1, 1, 1, 1])
+startGrid.append([4, 2, 3, 1, 2])
+startGrid.append([2, 1, 4, 1, 2])
+startGrid.append([3, 0, 1, 3, 0])
+startGrid.append([2, 1, 0, 4, 3])
+startGrid.append([0, 3, 2, 3, 1])
 
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 1, 1, 0])
-startGrid.append([0, 0, 2, 1, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 1, 1, 0])
+# startGrid.append([0, 0, 2, 1, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 0, 0, 0])
+# startGrid.append([0, 0, 0, 0, 0])
 
 
 game(startGrid, touchesLeft)
