@@ -42,7 +42,7 @@ def game(startGrid, touches):
 
 
 
-touchesLeft = 3
+touchesLeft = 5
 startGrid= []
 
 # startGrid.append([1, 1, 1, 1, 1])
@@ -52,19 +52,17 @@ startGrid= []
 # startGrid.append([2, 1, 0, 4, 3])
 # startGrid.append([0, 3, 2, 3, 1])
 
-startGrid.append([2, 0, 0, 0, 1])
+startGrid.append([1, 0, 0, 3, 1])
 startGrid.append([0, 1, 0, 1, 0])
-startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 1, 0, 0])
 startGrid.append([0, 0, 0, 0, 0])
 startGrid.append([0, 1, 0, 1, 0])
-startGrid.append([1, 0, 0, 0, 1])
-
+startGrid.append([1, 1, 0, 0, 1])
 
 game(startGrid, touchesLeft)
 
-# col = 4
+
+# candidates = [{'grid': startGrid, 'moves': [[1, 2], [1, 2], [1, 2]]}]
 #
-# colNr = 4
-#
-# for i in range(col + 1, colNr):
-#     print(i)
+# for candidate in candidates:
+#     newGrid = copy.deepcopy(candidate['grid'])

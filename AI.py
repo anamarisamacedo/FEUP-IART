@@ -2,6 +2,7 @@ rowNr = 6
 colNr = 5
 
 import numpy as np
+import copy
 
 class AI():
     def __init__(self, grid):
@@ -9,63 +10,85 @@ class AI():
 
 
     # function for AI to generate moves
-    def clickBubble(self, state, pos):
+    def clickBubble(self, grid, pos):
         row = pos[0]
         col = pos[1]
+        state = copy.deepcopy(grid)
 
-        if self.grid[row][col] == 0:
-            return self.grid
+        if state[row][col] == 0:
+            return state
 
-        elif self.grid[row][col] > 1:
-            self.grid[row][col] -= 1
-            return self.grid
+        elif state[row][col] > 1:
+            state[row][col] -= 1
+            return state
 
         else:
-            self.grid[row][col] -= 1
+            state[row][col] -= 1
             # burst bubble above
             for i in range(row - 1, -1, -1):
-                if self.grid[i][col] > 0:
+                if state[i][col] > 0:
                     # explode next bubble
-                    self.grid = self.clickBubble(state, (i, col))
+                    state = self.clickBubble(state, (i, col))
                     break
 
             # burst bubble below
             for i in range(row + 1, rowNr):
-                if self.grid[i][col] > 0:
+                if state[i][col] > 0:
                     # explode next bubble
-                    self.grid = self.clickBubble(state, (i, col))
+                    state = self.clickBubble(state, (i, col))
                     break
 
             # burst bubble left
             for i in range(col - 1, -1, -1):
-                if self.grid[row][i] > 0:
+                if state[row][i] > 0:
                     # explode next bubble
-                    self.grid = self.clickBubble(state, (row, i))
+                    state = self.clickBubble(state, (row, i))
                     break
 
             # burst bubble right
             for i in range(col + 1, colNr):
-                if self.grid[row][i] > 0:
+                if state[row][i] > 0:
                     # explode next bubble
-                    self.grid = self.clickBubble(state, (row, i))
+                    state = self.clickBubble(state, (row, i))
                     break
 
-            return self.grid
+            return state
 
-    # currently just for testing, makes a predefined move
     def BFS(self):
-        return [(0, 0), (1, 1), (0, 0)]
+        #candidates = [grid, list of moves]
+        candidates = [[copy.deepcopy(self.grid), [] ]]
+
+        while True:
+            newCandidates = []
+
+            for candidate in candidates:
+                for row in range(0, rowNr):
+                    for col in range(0, colNr):
+
+                        if candidate[0][row][col] > 0:
+
+                            newGrid = self.execute_movement(candidate[0], row, col)
+                            newMoves = copy.deepcopy(candidate[1])
+                            newMoves.append([row, col])
+
+                            candidates.append([newGrid, newMoves])
+
+                            if self.isSolution(newGrid):
+                                return newMoves
+
+            candidates = copy.deepcopy(newCandidates)
+
 
     def validate_movement(self, col, row, state):
         return (col >= 0 and col <= 5 and row >= 0 and row <= 6 and state[row][col] != 0)
 
-    def execute_movement(self, state, col, row):
+    def execute_movement(self, state, row, col):
         return self.clickBubble(state, (row, col))
 
     def evaluate_movement(self, new_state):
         return np.sum(new_state)
 
-    def jogo_terminado(self, new_state):
+    def isSolution(self, new_state):
         return (np.sum(new_state) == 0)
 
     def iddfs_algorithm(self, grid, toques):
@@ -73,7 +96,7 @@ class AI():
         self.iddfs(grid, toques, max_depth, max_depth)
 
     def iddfs(self, state, toques, depth, max_depth):
-        if (self.jogo_terminado(state)):
+        if (self.isSolution(state)):
             return True
 
         depth += 1
@@ -93,13 +116,13 @@ class AI():
         for i in range(0, colNr):
             for j in range(0, rowNr):
                 if (self.validate_movement(i, j, state)):
-                    new_state = self.execute_movement(state, i, j)
+                    new_state = self.execute_movement(state, j, i)
                     if (self.evaluate_movement(new_state) < aval):
                         aval = self.evaluate_movement(new_state)
                         move = (i, j)
         movfin.append(move)
         toques -= 1
-        if (toques == 0 or self.jogo_terminado(new_state)):
+        if (toques == 0 or self.isSolution(new_state)):
             print(movfin)
             return movfin
         self.greedy(new_state, movfin, toques)
