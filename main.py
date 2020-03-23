@@ -20,8 +20,6 @@ win = pygame.display.set_mode((windowWidth, windowHeight + scoreVerticalSpace))
 score = 0
 touchesLeft = 0
 
-inicialState = [[0, 1, 0, 0, 1],[0, 0, 1, 1, 0],[0, 0, 2, 1, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
-
 
 def playHuman():
     global score, touchesLeft
@@ -154,42 +152,41 @@ def clickBubble(grid, pos):
     row = pos[0]
     col = pos[1]
 
-    new_grid = grid[:]
-    new_grid[row][col] -= 1
+    grid[row][col] -= 1
 
-    if new_grid[row][col] > 0:
-        return new_grid
+    if grid[row][col] > 0:
+        return grid
 
     else:
         #burst bubble above
         for i in range(row-1, -1, -1):
-            if new_grid[i][col] > 0:
+            if grid[i][col] > 0:
                 #explode next bubble
-                new_grid = clickBubble(new_grid, (i, col))
+                new_grid = clickBubble(grid, (i, col))
                 break
 
         # burst bubble below
         for i in range(row, rowNr):
-            if new_grid[i][col] > 0:
+            if grid[i][col] > 0:
                 # explode next bubble
-                new_grid = clickBubble(new_grid, (i, col))
+                new_grid = clickBubble(grid, (i, col))
                 break
 
         #burst bubble left
         for i in range(col-1, -1, -1):
-            if new_grid[row][i] > 0:
+            if grid[row][i] > 0:
                 # explode next bubble
-                new_grid = clickBubble(new_grid, (row, i))
+                new_grid = clickBubble(grid, (row, i))
                 break
 
         # burst bubble right
         for i in range(col, colNr):
-            if new_grid[row][i] > 0:
+            if grid[row][i] > 0:
                 # explode next bubble
-                new_grid = clickBubble(new_grid, (row, i))
+                new_grid = clickBubble(grid, (row, i))
                 break
 
-        return new_grid
+        return grid
 
 
 #currently just for testing, makes a predefined move
@@ -376,7 +373,7 @@ def game(startGrid, touches):
 
 
 touchesLeft = 3
-startGrid = ([0, 1, 0, 0, 1],[0, 0, 1, 1, 0],[0, 0, 2, 1, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[1, 0, 0, 0, 0])
+startGrid= []
 
 # startGrid.append([1, 1, 1, 1, 1])
 # startGrid.append([4, 2, 3, 1, 2])
@@ -385,12 +382,12 @@ startGrid = ([0, 1, 0, 0, 1],[0, 0, 1, 1, 0],[0, 0, 2, 1, 0],[0, 0, 0, 0, 0],[0,
 # startGrid.append([2, 1, 0, 4, 3])
 # startGrid.append([0, 3, 2, 3, 1])
 
-#startGrid.append([0, 1, 0, 0, 1])
-#startGrid.append([0, 0, 1, 1, 0])
-#startGrid.append([0, 0, 2, 1, 0])
-#startGrid.append([0, 0, 0, 0, 0])
-#startGrid.append([0, 0, 0, 0, 0])
-#startGrid.append([1, 0, 0, 0, 0])
+startGrid.append([0, 1, 0, 0, 1])
+startGrid.append([0, 0, 1, 1, 0])
+startGrid.append([0, 0, 2, 1, 0])
+startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
 
 
 game(startGrid, touchesLeft)
