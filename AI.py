@@ -1,6 +1,8 @@
 rowNr = 6
 colNr = 5
 
+import numpy as np
+
 class AI():
     def __init__(self, grid):
         self.grid = grid
@@ -61,10 +63,10 @@ class AI():
         return self.clickBubble(state, (row, col))
 
     def evaluate_movement(self, new_state):
-        return self.np.sum(new_state)
+        return np.sum(new_state)
 
     def jogo_terminado(self, new_state):
-        return (self.np.sum(new_state) == 0)
+        return (np.sum(new_state) == 0)
 
     def iddfs_algorithm(self, grid, toques):
         max_depth = toques
@@ -82,7 +84,7 @@ class AI():
 
     def greedy_algorithm(self, state, toques):
         movfin = []
-        return self.greedy(self, state, movfin, toques)
+        return self.greedy(state, movfin, toques)
 
     def greedy(self, state, movfin, toques):
         print('\n'.join([''.join(['{:4}'.format(item) for item in row])
@@ -100,4 +102,4 @@ class AI():
         if (toques == 0 or self.jogo_terminado(new_state)):
             print(movfin)
             return movfin
-        self.greedy(new_state, movfin, toques, )
+        self.greedy(new_state, movfin, toques)

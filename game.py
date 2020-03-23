@@ -99,8 +99,8 @@ class Game():
         #Select AI mode
         while waitingForSelection:
             self.writeToScreen(center, "Press A to BFS algorithm", True)
-            self.writeToScreen((center[0], center[1] + 40), "Press B to greedy algorithm", False)
-            self.writeToScreen((center[0], center[1] + 80), "Press C to IDDFS algorithm", False)
+            self.writeToScreen((center[0], center[1] + 40), "Press B to IDDFS algorithm", False)
+            self.writeToScreen((center[0], center[1] + 80), "Press C to Greedy algorithm", False)
             pygame.display.flip()
 
             for event in pygame.event.get():
