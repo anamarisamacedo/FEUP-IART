@@ -52,7 +52,7 @@ class AI():
 
     # currently just for testing, makes a predefined move
     def BFS(self):
-        return [(0, 0), (1, 1)]
+        return [(0, 0), (1, 1), (0, 0)]
 
     def validate_movement(self, col, row, state):
         return (col >= 0 and col <= 5 and row >= 0 and row <= 6 and state[row][col] != 0)

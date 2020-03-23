@@ -121,14 +121,28 @@ class Game():
                         moves = ai.greedy_algorithm(self.startGrid, self.touchesLeft)
                         waitingForSelection = False
 
+        waitBetweenMoves = False
+        self.update()
+        pygame.display.flip()
+        pygame.time.wait(1000)
+
         while (not gameOver):
             self.update()
+            pygame.display.flip()
+
+            if waitBetweenMoves:
+                pygame.time.wait(1000)
+                waitBetweenMoves = False
 
             #if previous move ended, and there are more moves to play, play next move
             if len(self.projectiles) == 0 and len(moves) > 0:
                 move = moves.pop(0)
                 for bubble in self.bubbles:
                     if bubble.rect.collidepoint(100 * move[1] + 50, 100 * move[0] + scoreVerticalSpace):
+
+                        if bubble.level > 1:
+                            waitBetweenMoves = True
+
                         self.makeMove(bubble)
                         self.touchesLeft -= 1
                         break
@@ -147,14 +161,6 @@ class Game():
 
             # fill background
             self.win.fill((0, 0, 0))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-
-
-
 
     # write text in the screen
     def writeToScreen(self, pos, text, clearScreen):

@@ -52,7 +52,7 @@ startGrid= []
 # startGrid.append([2, 1, 0, 4, 3])
 # startGrid.append([0, 3, 2, 3, 1])
 
-startGrid.append([1, 0, 0, 0, 1])
+startGrid.append([2, 0, 0, 0, 1])
 startGrid.append([0, 1, 0, 1, 0])
 startGrid.append([0, 0, 0, 0, 0])
 startGrid.append([0, 0, 0, 0, 0])
