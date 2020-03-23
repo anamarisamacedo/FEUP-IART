@@ -1,7 +1,6 @@
 from pygame.sprite import groupcollide
 from AI import *
 from bubble import *
-from time import *
 
 rowNr = 6
 colNr = 5
