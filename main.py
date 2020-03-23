@@ -3,7 +3,7 @@ from pygame.sprite import groupcollide
 from bubble import *
 
 from time import *
-
+import numpy as np
 # level bubbles
 bubbles = pygame.sprite.Group()
 
@@ -19,6 +19,8 @@ scoreVerticalSpace = 80
 win = pygame.display.set_mode((windowWidth, windowHeight + scoreVerticalSpace))
 score = 0
 touchesLeft = 0
+
+inicialState = [[0, 1, 0, 0, 1],[0, 0, 1, 1, 0],[0, 0, 2, 1, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0]]
 
 
 def playHuman():
@@ -76,6 +78,8 @@ def playComputer():
 
         while waitingForSelection:
             writeToScreen(center, "Press A to BFS algorithm", True)
+            writeToScreen((center[0], center[1] + 30), "Press B to IDDFS algorithm", False)
+            writeToScreen((center[0], center[1] + 60), "Press C to Greedy algorithm", False)
             pygame.display.flip()
 
             for event in pygame.event.get():
@@ -86,6 +90,12 @@ def playComputer():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         moves = BFS(startGrid)
+                        waitingForSelection = False
+                    if event.key == pygame.K_b:
+                        moves = iddfs_algorithm(startGrid, touchesLeft)
+                        waitingForSelection = False
+                    if event.key == pygame.K_c:
+                        moves = greedy_algorithm(startGrid,touchesLeft )
                         waitingForSelection = False
 
         while len(moves) > 0 or len(projectiles) > 0:
@@ -144,41 +154,42 @@ def clickBubble(grid, pos):
     row = pos[0]
     col = pos[1]
 
-    grid[row][col] -= 1
+    new_grid = grid[:]
+    new_grid[row][col] -= 1
 
-    if grid[row][col] > 0:
-        return grid
+    if new_grid[row][col] > 0:
+        return new_grid
 
     else:
         #burst bubble above
         for i in range(row-1, -1, -1):
-            if grid[i][col] > 0:
+            if new_grid[i][col] > 0:
                 #explode next bubble
-                grid = clickBubble(grid, (i, col))
+                new_grid = clickBubble(new_grid, (i, col))
                 break
 
         # burst bubble below
         for i in range(row, rowNr):
-            if grid[i][col] > 0:
+            if new_grid[i][col] > 0:
                 # explode next bubble
-                grid = clickBubble(grid, (i, col))
+                new_grid = clickBubble(new_grid, (i, col))
                 break
 
         #burst bubble left
         for i in range(col-1, -1, -1):
-            if grid[row][i] > 0:
+            if new_grid[row][i] > 0:
                 # explode next bubble
-                grid = clickBubble(grid, (row, i))
+                new_grid = clickBubble(new_grid, (row, i))
                 break
 
         # burst bubble right
         for i in range(col, colNr):
-            if grid[row][i] > 0:
+            if new_grid[row][i] > 0:
                 # explode next bubble
-                grid = clickBubble(grid, (row, i))
+                new_grid = clickBubble(new_grid, (row, i))
                 break
 
-        return grid
+        return new_grid
 
 
 #currently just for testing, makes a predefined move
@@ -194,6 +205,55 @@ def BFS(grid):
                      for row in grid]))
 
     return [(0, 1), (1, 3)]
+
+def validate_movement(col, row, state):
+    return (col >= 0 and col <=5 and row >= 0 and row <=6 and state[row][col] != 0)
+
+def execute_movement(state,col,row):
+    return clickBubble(state, (row,col))
+
+def evaluate_movement(new_state):
+    return np.sum(new_state)
+
+def jogo_terminado(new_state):
+    return (np.sum(new_state)==0)
+
+def iddfs_algorithm(grid, toques):
+    max_depth=toques
+    iddfs(grid, toques, max_depth, max_depth)
+
+def iddfs(state, toques, depth, max_depth):
+    if(jogo_terminado(state)):
+        return True
+
+    depth +=1
+    if(depth== max_depth):
+        return False
+
+    #iddfs(stateVizinho, toques)
+
+def greedy_algorithm(state, toques):
+    movfin=[]
+    return greedy(state,movfin, toques)
+
+def greedy(state,movfin, toques):
+    print('\n'.join([''.join(['{:4}'.format(item) for item in row])
+                     for row in state]))
+    aval=1000
+    for i in range(0, colNr):
+        for j in range(0, rowNr):
+            if(validate_movement(i,j,state)):
+                new_state = execute_movement(state,i,j)
+                if (evaluate_movement(new_state) < aval):
+                    aval= evaluate_movement(new_state)
+                    move = (i,j)
+    movfin.append(move)
+    toques -= 1
+    if(toques == 0 or jogo_terminado(new_state)):
+        print(movfin)
+        return movfin
+    greedy(new_state, movfin, toques,)
+
 
 
 #write text in the screen
@@ -316,7 +376,7 @@ def game(startGrid, touches):
 
 
 touchesLeft = 3
-startGrid = []
+startGrid = ([0, 1, 0, 0, 1],[0, 0, 1, 1, 0],[0, 0, 2, 1, 0],[0, 0, 0, 0, 0],[0, 0, 0, 0, 0],[1, 0, 0, 0, 0])
 
 # startGrid.append([1, 1, 1, 1, 1])
 # startGrid.append([4, 2, 3, 1, 2])
@@ -325,12 +385,12 @@ startGrid = []
 # startGrid.append([2, 1, 0, 4, 3])
 # startGrid.append([0, 3, 2, 3, 1])
 
-startGrid.append([0, 1, 0, 0, 1])
-startGrid.append([0, 0, 1, 1, 0])
-startGrid.append([0, 0, 2, 1, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([1, 0, 0, 0, 0])
+#startGrid.append([0, 1, 0, 0, 1])
+#startGrid.append([0, 0, 1, 1, 0])
+#startGrid.append([0, 0, 2, 1, 0])
+#startGrid.append([0, 0, 0, 0, 0])
+#startGrid.append([0, 0, 0, 0, 0])
+#startGrid.append([1, 0, 0, 0, 0])
 
 
 game(startGrid, touchesLeft)
