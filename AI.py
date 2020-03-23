@@ -68,19 +68,32 @@ class AI():
     def jogo_terminado(self, new_state):
         return (np.sum(new_state) == 0)
 
-    def iddfs_algorithm(self, grid, toques):
-        max_depth = toques
-        self.iddfs(grid, toques, max_depth, max_depth)
+    def dfs_algorithm(self, grid):
+        self.dfs(grid)
 
-    def iddfs(self, state, toques, depth, max_depth):
-        if (self.jogo_terminado(state)):
+    def dfs(self):
+        return
+
+    def iddfs_algorithm(self, grid, max_depth):
+        for depth in range(0,max_depth):
+            moves = self.iddfs([grid], depth)
+            if moves is None:
+                continue
+            return moves
+
+    def iddfs(self, moves_list, depth):
+        current_state = moves_list[-1]
+        if (self.jogo_terminado(current_state)):
             return True
+        if depth <= 0:
+            return None
 
-        depth += 1
-        if (depth == max_depth):
-            return False
-
-        # iddfs(stateVizinho, toques)
+        for edge in current_state.children:
+            new_moves_list = list(moves_list)
+            #new_moves_list.append(edge.)
+            result = self.iddfs(new_moves_list, depth - 1)
+            if result is not None:
+                return result
 
     def greedy_algorithm(self, state, toques):
         movfin = []
@@ -103,3 +116,4 @@ class AI():
             print(movfin)
             return movfin
         self.greedy(new_state, movfin, toques)
+

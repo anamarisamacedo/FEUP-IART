@@ -98,8 +98,9 @@ class Game():
         #Select AI mode
         while waitingForSelection:
             self.writeToScreen(center, "Press A to BFS algorithm", True)
-            self.writeToScreen((center[0], center[1] + 40), "Press B to IDDFS algorithm", False)
-            self.writeToScreen((center[0], center[1] + 80), "Press C to Greedy algorithm", False)
+            self.writeToScreen((center[0], center[1] + 40), "Press B to DFS algorithm", False)
+            self.writeToScreen((center[0], center[1] + 80), "Press C to IDDFS algorithm", False)
+            self.writeToScreen((center[0], center[1] + 120), "Press D to Greedy algorithm", False)
             pygame.display.flip()
 
             for event in pygame.event.get():
@@ -113,10 +114,14 @@ class Game():
                         waitingForSelection = False
 
                     if event.key == pygame.K_b:
-                        moves = ai.iddfs_algorithm(self.startGrid, self.touchesLeft)
+                        moves = ai.dfs_algorithm(self.startGrid, self.touchesLeft)
                         waitingForSelection = False
 
                     if event.key == pygame.K_c:
+                        moves = ai.iddfs_algorithm(self.startGrid, self.touchesLeft)
+                        waitingForSelection = False
+
+                    if event.key == pygame.K_d:
                         moves = ai.greedy_algorithm(self.startGrid, self.touchesLeft)
                         waitingForSelection = False
 
