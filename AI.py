@@ -52,15 +52,6 @@ class AI():
 
     # currently just for testing, makes a predefined move
     def BFS(self):
-        print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-                         for row in self.grid]))
-        print("\n")
-
-        grid = self.clickBubble(self.grid, (1, 3))
-
-        print('\n'.join([''.join(['{:4}'.format(item) for item in row])
-                         for row in self.grid]))
-
         return [(0, 0), (1, 1)]
 
     def validate_movement(self, col, row, state):
