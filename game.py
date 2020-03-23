@@ -59,8 +59,8 @@ class Game():
             # avoid clicking before move ends
             if len(self.projectiles) <= 0 and self.touchesLeft > 0:
                 # check mouse events
-                for event in pygame.event.get():
 
+                for event in pygame.event.get():
                     # check mouse click on exit button
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -99,6 +99,8 @@ class Game():
         #Select AI mode
         while waitingForSelection:
             self.writeToScreen(center, "Press A to BFS algorithm", True)
+            self.writeToScreen((center[0], center[1] + 40), "Press B to greedy algorithm", False)
+            self.writeToScreen((center[0], center[1] + 80), "Press C to IDDFS algorithm", False)
             pygame.display.flip()
 
             for event in pygame.event.get():
@@ -109,6 +111,14 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         moves = ai.BFS()
+                        waitingForSelection = False
+
+                    if event.key == pygame.K_b:
+                        moves = ai.iddfs_algorithm(self.startGrid, self.touchesLeft)
+                        waitingForSelection = False
+
+                    if event.key == pygame.K_c:
+                        moves = ai.greedy_algorithm(self.startGrid, self.touchesLeft)
                         waitingForSelection = False
 
         while (not gameOver):
