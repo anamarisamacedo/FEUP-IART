@@ -93,7 +93,7 @@ class Game():
 
         moves = []
         waitingForSelection = True
-        ai = AI(self.startGrid)
+        ai = AI(self.startGrid, self.touchesLeft)
 
         #Select AI mode
         while waitingForSelection:
@@ -114,15 +114,15 @@ class Game():
                         waitingForSelection = False
 
                     if event.key == pygame.K_b:
-                        moves = ai.dfs_algorithm(self.startGrid, self.touchesLeft)
+                        moves = ai.dfs_algorithm()
                         waitingForSelection = False
 
                     if event.key == pygame.K_c:
-                        moves = ai.iddfs_algorithm(self.startGrid, self.touchesLeft)
+                        moves = ai.iddfs_algorithm()
                         waitingForSelection = False
 
                     if event.key == pygame.K_d:
-                        moves = ai.greedy_algorithm(self.startGrid, self.touchesLeft)
+                        moves = ai.greedy_algorithm()
                         waitingForSelection = False
 
         waitBetweenMoves = False
