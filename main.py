@@ -1,3 +1,5 @@
+import pygame as pygame
+
 from game import *
 
 # Project main loop
@@ -45,19 +47,21 @@ def game(startGrid, touches):
 touchesLeft = 5
 startGrid= []
 
-# startGrid.append([1, 1, 1, 1, 1])
-# startGrid.append([4, 2, 3, 1, 2])
-# startGrid.append([2, 1, 4, 1, 2])
-# startGrid.append([3, 0, 1, 3, 0])
-# startGrid.append([2, 1, 0, 4, 3])
-# startGrid.append([0, 3, 2, 3, 1])
+startGrid.append([1, 1, 1, 1, 1])
+startGrid.append([4, 2, 3, 1, 2])
+startGrid.append([2, 1, 4, 1, 2])
+startGrid.append([3, 0, 1, 3, 0])
+startGrid.append([2, 1, 0, 4, 3])
+startGrid.append([0, 3, 2, 3, 1])
 
+'''
 startGrid.append([1, 0, 0, 3, 1])
 startGrid.append([0, 1, 0, 1, 0])
 startGrid.append([0, 0, 1, 0, 0])
 startGrid.append([0, 0, 0, 0, 0])
 startGrid.append([0, 1, 0, 1, 0])
 startGrid.append([1, 1, 0, 0, 1])
+'''
 
 game(startGrid, touchesLeft)
 

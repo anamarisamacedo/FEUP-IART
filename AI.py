@@ -4,6 +4,7 @@ colNr = 5
 import numpy as np
 import copy
 
+
 class AI():
     def __init__(self, grid, touchesLeft):
         self.grid = grid
@@ -55,8 +56,8 @@ class AI():
             return state
 
     def BFS(self):
-        #candidates = [grid, list of moves]
-        candidates = [[copy.deepcopy(self.grid), [] ]]
+        # candidates = [grid, list of moves]
+        candidates = [[copy.deepcopy(self.grid), []]]
 
         while True:
             newCandidates = []
@@ -64,7 +65,7 @@ class AI():
             for candidate in candidates:
                 for row in range(0, rowNr):
                     for col in range(0, colNr):
-
+                        print(candidate[0][row][col])
                         if candidate[0][row][col] > 0:
 
                             newGrid = self.execute_movement(candidate[0], row, col)
@@ -77,7 +78,6 @@ class AI():
                                 return newMoves
 
             candidates = copy.deepcopy(newCandidates)
-
 
     def validate_movement(self, row, col, state):
         return (col >= 0 and col <= 5 and row >= 0 and row <= 6 and state[row][col] != 0)
@@ -94,13 +94,50 @@ class AI():
     def isSolution(self, new_state):
         return (np.sum(new_state) == 0)
 
-    def dfs_algorithm(self):
-        return
+    def expand(self, node):
+        next_nodes = []
+
+        for row in range(0, rowNr):
+            for col in range(0, colNr):
+                if node[0][row][col] > 0:
+                    new_grid = self.execute_movement(node[0], row, col)
+                    new_moves = copy.deepcopy(node[1])
+                    new_moves.append([row, col])
+                    print("Hello")
+
+                    next_nodes.append([new_grid, new_moves])
+
+        return next_nodes
+
+    def dfs(self, limit=5):
+        node = [copy.deepcopy(self.grid), []]
+        stack = [node]
+
+        # to control depth
+        SENTINEL = object()
+
+        while stack:
+            node = stack.pop()
+
+            if self.isSolution(node[0]):
+                print(node[1])
+                return node[1]
+
+            elif node == SENTINEL:
+                # finished this depth-level, go back one level
+                limit += 1
+
+            elif limit != 0:
+                # goind one level deeper, must push sentinel
+                limit -= 1
+                next_nodes = self.expand(node)
+                stack.append(SENTINEL)
+                stack.extend(next_nodes)
 
     def iddfs_algorithm(self):
         max_depth = copy.deepcopy(self.touchesLeft)
         state = copy.deepcopy(self.grid)
-        for depth in range(0,max_depth):
+        for depth in range(0, max_depth):
             moves = self.iddfs([state], depth)
             if moves is None:
                 continue
@@ -115,7 +152,7 @@ class AI():
 
         for edge in current_state.children:
             new_moves_list = list(moves_list)
-            #new_moves_list.append(edge.)
+            # new_moves_list.append(edge.)
             result = self.iddfs(new_moves_list, depth - 1)
             if result is not None:
                 return result
@@ -143,7 +180,6 @@ class AI():
             return movfin
         return self.greedy_levels(new_state, movfin, toques)
 
-
     def greedy_score(self, movfin, toques, score):
         state = copy.deepcopy(self.grid)
         aval = 1000
@@ -160,4 +196,3 @@ class AI():
             print(movfin)
             return movfin
         self.greedy(new_state, movfin, toques)
-

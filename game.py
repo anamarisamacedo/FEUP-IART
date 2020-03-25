@@ -114,7 +114,7 @@ class Game():
                         waitingForSelection = False
 
                     if event.key == pygame.K_b:
-                        moves = ai.dfs_algorithm()
+                        moves = ai.dfs()
                         waitingForSelection = False
 
                     if event.key == pygame.K_c:
