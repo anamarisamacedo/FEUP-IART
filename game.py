@@ -185,9 +185,8 @@ class Game():
         scoreAddition = 0
 
         for bubble in ballsHit.keys():
-
             # fix case when bubble is hit multiple times simultaneously
-            for hit in range(0, len(ballsHit[bubble]) - 1):
+            for hit in range(0, len(ballsHit[bubble])-1):
                 bubble.hit()
 
             newExplosion = bubble.hit()

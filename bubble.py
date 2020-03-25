@@ -66,3 +66,4 @@ class Projectile(pygame.sprite.Sprite):
 
         self.rect.center = (self.x, self.y)
 
+
