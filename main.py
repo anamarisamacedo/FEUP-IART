@@ -47,12 +47,12 @@ def game(startGrid, touches):
 touchesLeft = 5
 startGrid= []
 
-startGrid.append([1, 1, 1, 1, 1])
-startGrid.append([4, 2, 3, 1, 2])
-startGrid.append([2, 1, 4, 1, 2])
-startGrid.append([3, 0, 1, 3, 0])
-startGrid.append([2, 1, 0, 4, 3])
-startGrid.append([0, 3, 2, 3, 1])
+startGrid.append([1, 1, 1, 4, 2])
+startGrid.append([4, 3, 3, 4, 0])
+startGrid.append([1, 1, 0, 2, 1])
+startGrid.append([1, 1, 3, 4, 3])
+startGrid.append([0, 0, 4, 1, 0])
+startGrid.append([2, 0, 3, 2, 0])
 
 '''
 startGrid.append([1, 0, 0, 3, 1])
@@ -65,7 +65,13 @@ startGrid.append([1, 1, 0, 0, 1])
 
 game(startGrid, touchesLeft)
 
+#newGrid = [[1, 1, 1, 1, 1], [4, 2, 3, 1, 2], [2, 1, 4, 1, 1], [3, 0, 1, 3, 0], [2, 1, 0, 4, 3], [0, 3, 2, 3, 1]]
+#Ai = AI(newGrid, 1)
+#print(Ai.execute_movement(newGrid, 2, 4))
+#print(Ai.execute_movement(newGrid, 2, 1))
+#game(newGrid, touchesLeft)
 
+#
 # candidates = [{'grid': startGrid, 'moves': [[1, 2], [1, 2], [1, 2]]}]
 #
 # for candidate in candidates:

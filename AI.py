@@ -60,24 +60,15 @@ class AI():
         candidates = [[copy.deepcopy(self.grid), []]]
 
         while True:
-            newCandidates = []
+            candidate = candidates.pop(0)
 
-            for candidate in candidates:
-                for row in range(0, rowNr):
-                    for col in range(0, colNr):
-                        print(candidate[0][row][col])
-                        if candidate[0][row][col] > 0:
+            newCandidates = self.expand(candidate)
 
-                            newGrid = self.execute_movement(candidate[0], row, col)
-                            newMoves = copy.deepcopy(candidate[1])
-                            newMoves.append([row, col])
+            if self.isSolution(candidate[0]):
+                return candidate[1]
+            else:
+               candidates.extend(newCandidates)
 
-                            candidates.append([newGrid, newMoves])
-
-                            if self.isSolution(newGrid):
-                                return newMoves
-
-            candidates = copy.deepcopy(newCandidates)
 
     def validate_movement(self, row, col, state):
         return (col >= 0 and col <= 5 and row >= 0 and row <= 6 and state[row][col] != 0)
@@ -92,7 +83,7 @@ class AI():
         return
 
     def isSolution(self, new_state):
-        return (np.sum(new_state) == 0)
+        return np.sum(new_state) == 0
 
     def expand(self, node):
         next_nodes = []
@@ -103,7 +94,6 @@ class AI():
                     new_grid = self.execute_movement(node[0], row, col)
                     new_moves = copy.deepcopy(node[1])
                     new_moves.append([row, col])
-                    print("Hello")
 
                     next_nodes.append([new_grid, new_moves])
 
@@ -120,7 +110,6 @@ class AI():
             node = stack.pop()
 
             if self.isSolution(node[0]):
-                print(node[1])
                 return node[1]
 
             elif node == SENTINEL:
