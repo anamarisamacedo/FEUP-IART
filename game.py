@@ -119,6 +119,7 @@ class Game():
 
                     if event.key == pygame.K_c:
                         moves = ai.iddfs_algorithm()
+                        print(moves)
                         waitingForSelection = False
 
                     if event.key == pygame.K_d:

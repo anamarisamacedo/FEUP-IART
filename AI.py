@@ -137,32 +137,39 @@ class AI():
     def iddfs_algorithm(self):
         max_depth = copy.deepcopy(self.touchesLeft)
         state = copy.deepcopy(self.grid)
-        for depth in range(0, max_depth):
-            moves = self.iddfs([state], depth)
-            if moves is None:
+        for depth in range(0,max_depth):
+            result = self.iddfs([[state,[]]], depth)
+            if result is None:
                 continue
-            return moves
+            return result[1]
 
-    def iddfs(self, moves_list, depth):
-        current_state = moves_list[-1]
+    def iddfs(self, state_move_list, depth):
+        current_state = state_move_list[0][0]
+        moves = state_move_list[0][1]
         if (self.isSolution(current_state)):
-            return True
+            return state_move_list[0]
         if depth <= 0:
             return None
 
-        for edge in current_state.children:
-            new_moves_list = list(moves_list)
-            # new_moves_list.append(edge.)
-            result = self.iddfs(new_moves_list, depth - 1)
-            if result is not None:
-                return result
+        for row in range(0, rowNr):
+            for col in range(0, colNr):
+                if self.validate_movement(row, col, current_state):
+                    children = self.execute_movement(current_state, row, col)
+                    all_moves = copy.deepcopy(moves)
+                    all_moves.append([row, col])
+
+                    state_move_list.insert(0,[children, all_moves])
+
+                    result = self.iddfs(state_move_list, depth - 1)
+                    if result is not None and self.isSolution(result[0]):
+                        return result
+
 
     def greedy_algorithm(self):
         movfin = []
         state = copy.deepcopy(self.grid)
         touchesLeft = copy.deepcopy(self.touchesLeft)
-        moves = self.greedy_levels(state, movfin, touchesLeft)
-        return moves
+        return self.greedy_levels(state, movfin, touchesLeft)
 
     def greedy_levels(self, state, movfin, toques):
         aval = 1000
@@ -180,14 +187,15 @@ class AI():
             return movfin
         return self.greedy_levels(new_state, movfin, toques)
 
+
     def greedy_score(self, movfin, toques, score):
         state = copy.deepcopy(self.grid)
-        aval = 1000
+        aval = 0
         for row in range(0, rowNr):
             for col in range(0, colNr):
                 if (self.validate_movement(row, col, state)):
                     new_state = copy.deepcopy(self.execute_movement(state, row, col))
-                    if (self.evaluate_movement_score(new_state) < aval):
+                    if (self.evaluate_movement_score(new_state) > aval):
                         aval = copy.deepcopy(self.evaluate_movement(new_state))
                         move = [row, col]
         movfin.append(move)
