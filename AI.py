@@ -10,50 +10,80 @@ class AI():
         self.grid = grid
         self.touchesLeft = touchesLeft
 
-    # function for AI to generate moves
-    def clickBubble(self, grid, pos):
-        row = pos[0]
-        col = pos[1]
-        state = copy.deepcopy(grid)
 
-        if state[row][col] == 0:
-            return state
+    def canCreateProjectile(self, projectile):
+        # projectile going up
+        if projectile[1] == 1:
+            if projectile[0][0] - 1 >= 0:
+                projectile[0][0] -= 1
+                return True
+            else:
+                return False
 
-        elif state[row][col] > 1:
-            state[row][col] -= 1
-            return state
+        # projectile going right
+        elif projectile[1] == 2:
+            if projectile[0][1] + 1 <= colNr - 1:
+                projectile[0][1] += 1
+                return True
+            else:
+                return False
+
+        # projectile going down
+        elif projectile[1] == 3:
+            if projectile[0][0] + 1 <= rowNr - 1:
+                projectile[0][0] += 1
+                return True
+            else:
+                return False
+
+        # projectile going left
+        elif projectile[1] == 4:
+            if projectile[0][1] - 1 >= 0:
+                projectile[0][1] -= 1
+                return True
+            else:
+                return False
 
         else:
-            state[row][col] -= 1
-            # burst bubble above
-            for i in range(row - 1, -1, -1):
-                if state[i][col] > 0:
-                    # explode next bubble
-                    state = self.clickBubble(state, (i, col))
-                    break
+            return True
 
-            # burst bubble below
-            for i in range(row + 1, rowNr):
-                if state[i][col] > 0:
-                    # explode next bubble
-                    state = self.clickBubble(state, (i, col))
-                    break
 
-            # burst bubble left
-            for i in range(col - 1, -1, -1):
-                if state[row][i] > 0:
-                    # explode next bubble
-                    state = self.clickBubble(state, (row, i))
-                    break
+    def clickBubble(self, state, pos):
+        #projectiles= [pos, direction]
+        projectiles = [[list(pos), 0]]
 
-            # burst bubble right
-            for i in range(col + 1, colNr):
-                if state[row][i] > 0:
-                    # explode next bubble
-                    state = self.clickBubble(state, (row, i))
-                    break
+        grid = copy.deepcopy(state)
 
-            return state
+        while len(projectiles) > 0:
+            #updates projectiles position, and removes the ones that go off grid
+            projectiles[:] = [projectile for projectile in projectiles if self.canCreateProjectile(projectile)]
+
+            #set containing balls which have been hit
+            ballsHit = set()
+
+            #collide projectiles with balls
+            for projectile in projectiles:
+
+                #if there is a ball in the projectiles position
+                if grid[projectile[0][0]][projectile[0][1]] > 0:
+                    ballsHit.add((projectile[0][0], projectile[0][1]))
+                    projectiles.remove(projectile)
+
+            for ballPos in ballsHit:
+
+                #if it's a level 1 ball, create new projectiles
+                if grid[ballPos[0]][ballPos[1]] == 1:
+
+                    for i in range(1, 5):
+                        projectiles.append([list(ballPos), i])
+
+                grid[ballPos[0]][ballPos[1]] -= 1
+
+        return grid
+
+
+
+
 
     def BFS(self):
         # candidates = [grid, list of moves]
@@ -65,6 +95,7 @@ class AI():
             newCandidates = self.expand(candidate)
 
             if self.isSolution(candidate[0]):
+                print(candidate)
                 return candidate[1]
             else:
                candidates.extend(newCandidates)
