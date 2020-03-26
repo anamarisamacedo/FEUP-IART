@@ -90,7 +90,7 @@ class Game():
 
     def playComputer(self):
         gameOver = False
-
+        greedy = False
         moves = []
         waitingForSelection = True
         ai = AI(self.startGrid, self.touchesLeft)
@@ -119,12 +119,31 @@ class Game():
 
                     if event.key == pygame.K_c:
                         moves = ai.iddfs_algorithm()
-                        print(moves)
                         waitingForSelection = False
 
                     if event.key == pygame.K_d:
-                        moves = ai.greedy_algorithm()
+                        greedy = True
                         waitingForSelection = False
+
+        while(greedy):
+            self.writeToScreen((center[0], center[1]), "Press A to Level Heuristic", True)
+            self.writeToScreen((center[0], center[1] + 40), "Press B to Score Heuristic", False)
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        moves = ai.greedy_algorithm("levels")
+                        greedy = False
+
+                    if event.key == pygame.K_b:
+                        moves = ai.greedy_algorithm("score")
+                        greedy = False
+
 
         waitBetweenMoves = False
         self.update()
