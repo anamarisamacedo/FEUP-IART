@@ -115,7 +115,8 @@ class AI():
             else:
                candidates.extend(newCandidates)
 
-    def dfs(self, limit=5):
+    def dfs(self):
+        limit = self.touchesLeft
         node = [copy.deepcopy(self.grid), []]
         stack = [node]
         path = []
@@ -125,6 +126,7 @@ class AI():
 
         while stack:
             node = stack.pop()
+            self.printPath(stack)
 
             if node == SENTINEL:
                 # finished this depth-level, go back one level
@@ -137,12 +139,14 @@ class AI():
                 return node[1]
 
             elif limit != 0:
-                # goind one level deeper, must push sentinel
+                # going one level deeper, must push sentinel
                 limit -= 1
                 next_nodes = self.expand(node)
                 path.append(node)
                 stack.append(SENTINEL)
                 stack.extend(next_nodes)
+
+        print("No solution found")
 
     def iddfs_algorithm(self):
         max_depth = self.touchesLeft
