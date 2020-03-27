@@ -68,23 +68,21 @@ grid2.append([1, 0, 2, 2, 0])
 newGrid = [[1, 1, 1, 4, 2], [4, 3, 3, 4, 0], [1, 1, 0, 2, 1], [1, 1, 3, 4, 3], [0, 0, 4, 1, 0], [2, 0, 3, 2, 0]]
 
 startGrid.append([1, 1, 1, 1, 1])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
-startGrid.append([0, 0, 0, 0, 0])
+startGrid.append([1, 2, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
+startGrid.append([1, 0, 0, 0, 0])
 
 
-Ai = AI(grid2, 5)
-newerGrid = Ai.clickBubble(grid2, (0, 0))
+Ai = AI(startGrid, 5)
+newerGrid = Ai.clickBubble(startGrid, (0, 0))
 
 
 for row in newerGrid:
     print(row)
 
-
-
-game(grid2, touchesLeft)
+game(grid1, touchesLeft)
 
 #nextGrid = Ai.execute_movement(startGrid, 0, 0)
 

@@ -51,6 +51,7 @@ class AI():
     def clickBubble(self, state, pos):
         #projectiles= [pos, direction]
         projectiles = [[list(pos), 0]]
+        projectilesHit = []
 
         grid = copy.deepcopy(state)
 
@@ -58,19 +59,19 @@ class AI():
             #updates projectiles position, and removes the ones that go off grid
             projectiles[:] = [projectile for projectile in projectiles if self.canCreateProjectile(projectile)]
 
+            #Creates list of projectiles which hit a ball
+            projectilesHit[:] = [projectile for projectile in projectiles if grid[projectile[0][0]][projectile[0][1]] > 0]
+
+            #Updates projectiles list to keep only the ones that didn't hit anything
+            projectiles[:] = [projectile for projectile in projectiles if not grid[projectile[0][0]][projectile[0][1]] > 0]
+
             #set containing balls which have been hit
             ballsHit = set()
 
-            #collide projectiles with balls
-            for projectile in projectiles:
-
-                #if there is a ball in the projectiles position
-                if grid[projectile[0][0]][projectile[0][1]] > 0:
-                    ballsHit.add((projectile[0][0], projectile[0][1]))
-                    projectiles.remove(projectile)
+            for projectile in projectilesHit:
+                ballsHit.add((projectile[0][0], projectile[0][1]))
 
             for ballPos in ballsHit:
-
                 #if it's a level 1 ball, create new projectiles
                 if grid[ballPos[0]][ballPos[1]] == 1:
 
@@ -80,9 +81,6 @@ class AI():
                 grid[ballPos[0]][ballPos[1]] -= 1
 
         return grid
-
-
-
 
 
     def BFS(self):
@@ -95,14 +93,13 @@ class AI():
             newCandidates = self.expand(candidate)
 
             if self.isSolution(candidate[0]):
-                print(candidate)
                 return candidate[1]
             else:
                candidates.extend(newCandidates)
 
 
     def validate_movement(self, row, col, state):
-        return (col >= 0 and col <= 5 and row >= 0 and row <= 6 and state[row][col] != 0)
+        return (col >= 0 and col <= colNr and row >= 0 and row <= rowNr and state[row][col] != 0)
 
     def execute_movement(self, state, row, col):
         return self.clickBubble(state, [row, col])
@@ -196,10 +193,10 @@ class AI():
         for row in range(0, rowNr):
             for col in range(0, colNr):
                 if (self.validate_movement(row, col, state)):
-                    new_state = copy.deepcopy(self.execute_movement(state, row, col))
+                    new_state = self.execute_movement(state, row, col)
                     if (self.evaluate_movement_levels(new_state) < aval):
-                        aval = copy.deepcopy(self.evaluate_movement_levels(new_state))
-                        move = copy.deepcopy([row, col])
+                        aval = self.evaluate_movement_levels(new_state)
+                        move = [row, col]
         movfin.append(move)
         toques -= 1
         if (toques == 0 or self.isSolution(new_state)):
