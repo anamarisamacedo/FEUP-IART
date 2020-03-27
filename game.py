@@ -11,16 +11,19 @@ scoreVerticalSpace = 80
 center = (windowWidth/2, windowHeight/2)
 
 class Game():
-    def __init__(self, startGrid, touches):
+    def __init__(self, levels):
         self.win = pygame.display.set_mode((windowWidth, windowHeight + scoreVerticalSpace))
-        self.startGrid = startGrid
         self.bubbles = pygame.sprite.Group()
         self.score = 0
-        self.touchesLeft = touches
         self.projectiles = pygame.sprite.Group()
+        self.levels = levels
 
         pygame.init()
         pygame.display.set_caption("Bubble blast")
+
+    def setLevel(self, level):
+        self.startGrid = self.levels[level-1][1]
+        self.touchesLeft = self.levels[level-1][2]
         self.createBubbles()
 
     #create list of bubbles

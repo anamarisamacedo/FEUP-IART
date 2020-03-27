@@ -1,21 +1,20 @@
-import pygame as pygame
-
 from game import *
 
 # Project main loop
-def game(startGrid, touches):
-    game = Game(startGrid, touches)
+def game(levels):
+    game = Game(levels)
 
     intro = run = True
-    computer = human = False
+    computer = human = choosingLevel = False
 
     while run:
-        game.writeToScreen(center, "Press H to play in human mode. ", True)
-        game.writeToScreen((center[0], center[1] + 30), "Press C to play in computer mode. ", False)
-        pygame.display.flip()
-
         #MAIN MENU
         while intro:
+
+            game.writeToScreen(center, "Press H to play in human mode. ", True)
+            game.writeToScreen((center[0], center[1] + 30), "Press C to play in computer mode. ", False)
+            pygame.display.flip()
+
             #check mouse events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -28,6 +27,35 @@ def game(startGrid, touches):
                         computer = True
 
                     intro = False
+                    choosingLevel = True
+                    game.writeToScreen(center, "", True)
+
+        levelNotChosen = True
+
+
+        while choosingLevel:
+            pygame.display.flip()
+            if levelNotChosen:
+                game.writeToScreen(center, "What level would you like to play?", False)
+                game.writeToScreen((center[0], center[1] + 50), "Select from 1 to " + str(len(levels)), False)
+
+            pygame.display.flip()
+            # check mouse events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+
+                elif event.type == pygame.KEYDOWN:
+                    level = pygame.key.name(event.key)
+
+                    if level >= '1' and level <= str(len(levels)):
+                        game.setLevel(int(level))
+                        choosingLevel = False
+                    else:
+                        print("bad level")
+                        game.writeToScreen((center[0], center[1] - 50), "That level doesn't exist", False)
+                        levelNotChosen = True
+
 
         if(human):
             game.playHuman()
@@ -35,13 +63,11 @@ def game(startGrid, touches):
         elif(computer):
             game.playComputer()
 
-
-        #wait for user to click exit button
         while True:
+            # check mouse events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    exit()
 
 
 touchesLeft = 5
@@ -74,37 +100,45 @@ startGrid.append([1, 0, 0, 0, 0])
 
 def parseLevels(file):
     levels = []
-    rawFiile = []
+    rawFile = []
     newLevel = []
+    wroteLevel = wroteTouches = False
 
     with open(file) as my_file:
         rawFile = my_file.read().splitlines()
 
     for line in rawFile:
-        if line[:-1] == "Level":
+        if not wroteLevel:
             newLevel.clear()
-            newLevel.append(line[-1:])
+            newLevel.append(int(line[-1:]))
             newLevel.append([])
+            newLevel.append([])
+            wroteLevel = True
+            continue
 
+        if not wroteTouches:
+            newLevel[2] = int(line)
+            wroteTouches = True
+            continue
 
-        elif len(newLevel[1]) < 4:
-            newLine = line.split()
+        if len(newLevel[1]) < 6:
+            newLine = list(map(int, line.split()))
             newLevel[1].append(newLine)
 
-            if len(newLevel[1] == 4):
-                levels.append(newLevel)
+            if len(newLevel[1]) == 6:
+                levels.append(copy.deepcopy(newLevel))
+                wroteLevel = wroteTouches = False
 
     return levels
 
 
-#newArray = parseLevels("Levels.txt")
+levels = parseLevels("Levels.txt")
+#
+#
+# for line in levels:
+#     print(line)
 
-
-#print(newArray)
-
-
-
-game(newGrid, touchesLeft)
+game(levels)
 
 
 
