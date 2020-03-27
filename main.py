@@ -44,13 +44,10 @@ def game(startGrid, touches):
                     exit()
 
 
-
 touchesLeft = 5
 startGrid = []
 grid1 = []
 grid2 = []
-
-
 
 grid1.append([1, 0, 0, 4, 1])
 grid1.append([0, 1, 0, 1, 0])
@@ -108,7 +105,6 @@ print(newArray)
 
 
 #game(newGrid, touchesLeft)
-
 
 
 

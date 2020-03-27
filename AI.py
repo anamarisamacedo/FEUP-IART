@@ -82,6 +82,10 @@ class AI():
     def isSolution(self, new_state):
         return np.sum(new_state) == 0
 
+    def printPath(self, path):
+        for p in path:
+            print(p)
+
     #returns all possible moves for given grid
     def expand(self, node):
         next_nodes = []
@@ -114,6 +118,7 @@ class AI():
     def dfs(self, limit=5):
         node = [copy.deepcopy(self.grid), []]
         stack = [node]
+        path = []
 
         # to control depth
         SENTINEL = object()
@@ -121,17 +126,21 @@ class AI():
         while stack:
             node = stack.pop()
 
-            if self.isSolution(node[0]):
-                return node[1]
-
-            elif node == SENTINEL:
+            if node == SENTINEL:
                 # finished this depth-level, go back one level
                 limit += 1
+                path.pop()
+
+            elif self.isSolution(node[0]):
+                path.append(node)
+                self.printPath(path)
+                return node[1]
 
             elif limit != 0:
                 # goind one level deeper, must push sentinel
                 limit -= 1
                 next_nodes = self.expand(node)
+                path.append(node)
                 stack.append(SENTINEL)
                 stack.extend(next_nodes)
 
