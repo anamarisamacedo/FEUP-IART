@@ -16,6 +16,7 @@ def game(startGrid, touches):
 
         #MAIN MENU
         while intro:
+            #check mouse events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -74,14 +75,46 @@ startGrid.append([1, 0, 0, 0, 0])
 startGrid.append([1, 0, 0, 0, 0])
 startGrid.append([1, 0, 0, 0, 0])
 
+def parseLevels(file):
+    levels = []
+    rawFiile = []
+    newLevel = []
 
-Ai = AI(newGrid, 5)
-newerGrid = Ai.clickBubble(newGrid, (3, 0))
+    with open(file) as my_file:
+        rawFile = my_file.read().splitlines()
 
-for row in newerGrid:
-    print(row)
+    for line in rawFile:
+        if line[:-1] == "Level":
+            newLevel.clear()
+            newLevel.append(line[-1:])
+            newLevel.append([])
 
-game(newGrid, touchesLeft)
 
-#nextGrid = Ai.execute_movement(startGrid, 0, 0)
+        elif len(newLevel[1]) < 4:
+            newLine = line.split()
+            newLevel[1].append(newLine)
+
+            if len(newLevel[1] == 4):
+                levels.append(newLevel)
+
+    return levels
+
+
+newArray = parseLevels("Levels.txt")
+
+
+print(newArray)
+
+
+
+#game(newGrid, touchesLeft)
+
+
+
+
+
+
+
+
+
 
