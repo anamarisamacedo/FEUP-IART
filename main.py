@@ -97,14 +97,14 @@ def parseLevels(file):
     return levels
 
 
-newArray = parseLevels("Levels.txt")
+#newArray = parseLevels("Levels.txt")
 
 
-print(newArray)
+#print(newArray)
 
 
 
-#game(newGrid, touchesLeft)
+game(newGrid, touchesLeft)
 
 
 
