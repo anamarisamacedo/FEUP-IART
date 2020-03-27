@@ -75,14 +75,13 @@ startGrid.append([1, 0, 0, 0, 0])
 startGrid.append([1, 0, 0, 0, 0])
 
 
-Ai = AI(startGrid, 5)
-newerGrid = Ai.clickBubble(startGrid, (0, 0))
-
+Ai = AI(newGrid, 5)
+newerGrid = Ai.clickBubble(newGrid, (3, 0))
 
 for row in newerGrid:
     print(row)
 
-game(grid1, touchesLeft)
+game(newGrid, touchesLeft)
 
 #nextGrid = Ai.execute_movement(startGrid, 0, 0)
 

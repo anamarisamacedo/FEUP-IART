@@ -10,54 +10,28 @@ class AI():
         self.grid = grid
         self.touchesLeft = touchesLeft
 
-
-    def canCreateProjectile(self, projectile):
-        # projectile going up
-        if projectile[1] == 1:
-            if projectile[0][0] - 1 >= 0:
-                projectile[0][0] -= 1
-                return True
-            else:
-                return False
-
-        # projectile going right
-        elif projectile[1] == 2:
-            if projectile[0][1] + 1 <= colNr - 1:
-                projectile[0][1] += 1
-                return True
-            else:
-                return False
-
-        # projectile going down
-        elif projectile[1] == 3:
-            if projectile[0][0] + 1 <= rowNr - 1:
-                projectile[0][0] += 1
-                return True
-            else:
-                return False
-
-        # projectile going left
-        elif projectile[1] == 4:
-            if projectile[0][1] - 1 >= 0:
-                projectile[0][1] -= 1
-                return True
-            else:
-                return False
-
-        else:
-            return True
+    #returns true if the next position for the projectile is valid
+    def updateProjectile(self, projectile):
+        #Update projectile position
+        projectile[0][0] += projectile[1][0]
+        projectile[0][1] += projectile[1][1]
+        return self.isValidPos(projectile[0][0], projectile[0][1])
 
 
+    #clicks bubble at pos, returns new grid with the next state
     def clickBubble(self, state, pos):
+        #projectile list at the current moment, initialized with a projectile in the click position
         #projectiles= [pos, direction]
-        projectiles = [[list(pos), 0]]
+        projectiles = [[list(pos), [0, 0]]]
+
+        #list of projectiles that hit a ball
         projectilesHit = []
 
         grid = copy.deepcopy(state)
 
         while len(projectiles) > 0:
             #updates projectiles position, and removes the ones that go off grid
-            projectiles[:] = [projectile for projectile in projectiles if self.canCreateProjectile(projectile)]
+            projectiles[:] = [projectile for projectile in projectiles if self.updateProjectile(projectile)]
 
             #Creates list of projectiles which hit a ball
             projectilesHit[:] = [projectile for projectile in projectiles if grid[projectile[0][0]][projectile[0][1]] > 0]
@@ -75,16 +49,56 @@ class AI():
                 #if it's a level 1 ball, create new projectiles
                 if grid[ballPos[0]][ballPos[1]] == 1:
 
-                    for i in range(1, 5):
-                        projectiles.append([list(ballPos), i])
+                    projectiles.append([list(ballPos), [0, 1]])
+                    projectiles.append([list(ballPos), [0, -1]])
+                    projectiles.append([list(ballPos), [1, 0]])
+                    projectiles.append([list(ballPos), [-1, 0]])
 
                 grid[ballPos[0]][ballPos[1]] -= 1
 
         return grid
 
+    #returns true if pos(row, col) is within the grid
+    def isValidPos(self, row, col):
+        return (col >= 0 and col < colNr and row >= 0 and row < rowNr)
+
+    #returns true if there is a bubble in (row, col), and (row, col) is within grid
+    def validate_movement(self, row, col, state):
+        return (self.isValidPos(row, col) and state[row][col] != 0)
+
+    #wrapper function for clickBubble
+    def execute_movement(self, state, row, col):
+        return self.clickBubble(state, [row, col])
+
+    #returns sum of all the bubbles' levels in the grid (if it returns 0, new_state is solved)
+    def evaluate_movement_levels(self, new_state):
+        return np.sum(new_state)
+
+    #TODO: should do someting?
+    def evaluate_movement_score(self, new_state):
+        return
+
+    #returns true if there aren't bubbles in the grid
+    def isSolution(self, new_state):
+        return np.sum(new_state) == 0
+
+    #returns all possible moves for given grid
+    def expand(self, node):
+        next_nodes = []
+
+        for row in range(0, rowNr):
+            for col in range(0, colNr):
+                if self.validate_movement(row, col, node[0]):
+                    new_grid = self.execute_movement(node[0], row, col)
+                    new_moves = copy.deepcopy(node[1])
+                    new_moves.append([row, col])
+
+                    next_nodes.append([new_grid, new_moves])
+
+        return next_nodes
 
     def BFS(self):
-        # candidates = [grid, list of moves]
+        # candidate = [grid, list of moves]
         candidates = [[copy.deepcopy(self.grid), []]]
 
         while True:
@@ -96,36 +110,6 @@ class AI():
                 return candidate[1]
             else:
                candidates.extend(newCandidates)
-
-
-    def validate_movement(self, row, col, state):
-        return (col >= 0 and col <= colNr and row >= 0 and row <= rowNr and state[row][col] != 0)
-
-    def execute_movement(self, state, row, col):
-        return self.clickBubble(state, [row, col])
-
-    def evaluate_movement_levels(self, new_state):
-        return np.sum(new_state)
-
-    def evaluate_movement_score(self, new_state):
-        return
-
-    def isSolution(self, new_state):
-        return np.sum(new_state) == 0
-
-    def expand(self, node):
-        next_nodes = []
-
-        for row in range(0, rowNr):
-            for col in range(0, colNr):
-                if node[0][row][col] > 0:
-                    new_grid = self.execute_movement(node[0], row, col)
-                    new_moves = copy.deepcopy(node[1])
-                    new_moves.append([row, col])
-
-                    next_nodes.append([new_grid, new_moves])
-
-        return next_nodes
 
     def dfs(self, limit=5):
         node = [copy.deepcopy(self.grid), []]
@@ -152,8 +136,9 @@ class AI():
                 stack.extend(next_nodes)
 
     def iddfs_algorithm(self):
-        max_depth = copy.deepcopy(self.touchesLeft)
+        max_depth = self.touchesLeft
         state = copy.deepcopy(self.grid)
+
         for depth in range(0,max_depth):
             result = self.iddfs([[state,[]]], depth)
             if result is None:
