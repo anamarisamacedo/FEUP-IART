@@ -129,12 +129,15 @@ class Game():
                     if event.key == pygame.K_d:
                         greedy = True
 
+                    if len(moves) > self.touchesLeft:
+                        gameOver = True
+
                     #mode was chosen, game can start
                     waitingForSelection = False
 
         #choose heuristic for greedy mode
         while(greedy):
-            self.writeToScreen((center[0], center[1]), "Press A to Level Heuristic", True)
+            self.writeToScreen(center, "Press A to Level Heuristic", True)
             self.writeToScreen((center[0], center[1] + 40), "Press B to Score Heuristic", False)
             pygame.display.flip()
 
@@ -151,6 +154,9 @@ class Game():
                     if event.key == pygame.K_b:
                         moves = ai.greedy_algorithm("score")
                         greedy = False
+
+                    if len(moves) > self.touchesLeft:
+                        gameOver = True
 
 
         waitBetweenMoves = False
@@ -195,6 +201,11 @@ class Game():
 
             # fill background
             self.win.fill((0, 0, 0))
+
+        if gameOver:
+            self.writeToScreen(center, "No solution for the given moves exist :(", True)
+            pygame.display.flip()
+
 
     # write text in the screen, if clearScreen=true, whole screen is wiped before writing
     def writeToScreen(self, pos, text, clearScreen):

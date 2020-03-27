@@ -32,7 +32,7 @@ def game(levels):
 
         levelNotChosen = True
 
-
+        #choose level to play
         while choosingLevel:
             pygame.display.flip()
             if levelNotChosen:
@@ -45,6 +45,7 @@ def game(levels):
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
+                #check level chosen
                 elif event.type == pygame.KEYDOWN:
                     level = pygame.key.name(event.key)
 
