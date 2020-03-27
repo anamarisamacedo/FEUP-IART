@@ -6,8 +6,8 @@ rowNr = 6
 colNr = 5
 windowWidth = 100*colNr
 windowHeight = 100*rowNr
+#window space reserved for score
 scoreVerticalSpace = 80
-
 center = (windowWidth/2, windowHeight/2)
 
 class Game():
@@ -23,7 +23,7 @@ class Game():
         pygame.display.set_caption("Bubble blast")
         self.createBubbles()
 
-
+    #create list of bubbles
     def createBubbles(self):
         # create bubble list
         for i in range(0, len(self.startGrid[0])):
@@ -33,12 +33,12 @@ class Game():
                     self.bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), self.startGrid[j][i]))
 
 
-    # animate a move
+    #decrements clicked bubble's level, creates projectiles if the bubble explodes (if it's a level 1 bubble)
     def makeMove(self, bubble):
         # if bubble is clicked, make it get hit and decrement touchesLeft
         newExplosion = bubble.hit()
 
-        # if bubble dies, add explosions
+        # if bubble explodes (level 1), add explosions
         if newExplosion != None:
             self.score += bubble.score
             self.bubbles.remove(bubble)
@@ -48,8 +48,8 @@ class Game():
             self.projectiles.add(newExplosion[0][2])
             self.projectiles.add(newExplosion[0][3])
 
+    #logic for human mode
     def playHuman(self):
-
         gameOver = False
         while (not gameOver):
 
@@ -59,6 +59,7 @@ class Game():
             if len(self.projectiles) <= 0 and self.touchesLeft > 0:
                 # check mouse events
 
+                #check all mouse events
                 for event in pygame.event.get():
                     # check mouse click on exit button
                     if event.type == pygame.QUIT:
@@ -68,11 +69,13 @@ class Game():
                     # check mouse click on bubble
                     if event.type == pygame.MOUSEBUTTONUP:
                         for bubble in self.bubbles:
+                            #if a bubble was clicked
                             if bubble.rect.collidepoint(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
                                 self.makeMove(bubble)
                                 self.touchesLeft -= 1
                                 break
 
+            #check if game ended
             if len(self.projectiles) <= 0:
                 if len(self.bubbles) <= 0:
                     self.writeToScreen(center, "You won!", True)
@@ -88,9 +91,10 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
+    #logic for computer mode
     def playComputer(self):
         gameOver = False
-
+        greedy = False
         moves = []
         waitingForSelection = True
         ai = AI(self.startGrid, self.touchesLeft)
@@ -103,6 +107,7 @@ class Game():
             self.writeToScreen((center[0], center[1] + 120), "Press D to Greedy algorithm", False)
             pygame.display.flip()
 
+            #check mouse events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -111,20 +116,39 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         moves = ai.BFS()
-                        waitingForSelection = False
 
                     if event.key == pygame.K_b:
                         moves = ai.dfs()
-                        waitingForSelection = False
 
                     if event.key == pygame.K_c:
                         moves = ai.iddfs_algorithm()
-                        print(moves)
-                        waitingForSelection = False
 
                     if event.key == pygame.K_d:
-                        moves = ai.greedy_algorithm()
-                        waitingForSelection = False
+                        greedy = True
+
+                    #mode was chosen, game can start
+                    waitingForSelection = False
+
+        #choose heuristic for greedy mode
+        while(greedy):
+            self.writeToScreen((center[0], center[1]), "Press A to Level Heuristic", True)
+            self.writeToScreen((center[0], center[1] + 40), "Press B to Score Heuristic", False)
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_a:
+                        moves = ai.greedy_algorithm("levels")
+                        greedy = False
+
+                    if event.key == pygame.K_b:
+                        moves = ai.greedy_algorithm("score")
+                        greedy = False
+
 
         waitBetweenMoves = False
         self.update()
@@ -145,6 +169,7 @@ class Game():
                 for bubble in self.bubbles:
                     if bubble.rect.collidepoint(100 * move[1] + 50, 100 * move[0] + scoreVerticalSpace):
 
+                        #if the bubble isn't going to explode, wait 1 second to see the changes on screen
                         if bubble.level > 1:
                             waitBetweenMoves = True
 
@@ -152,6 +177,7 @@ class Game():
                         self.touchesLeft -= 1
                         break
 
+            #check if game ended
             if len(self.projectiles) <= 0:
                 if len(self.bubbles) <= 0:
                     self.writeToScreen(center, "You won!", True)
@@ -167,7 +193,7 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
-    # write text in the screen
+    # write text in the screen, if clearScreen=true, whole screen is wiped before writing
     def writeToScreen(self, pos, text, clearScreen):
         if clearScreen:
             self.win.fill((0, 0, 0))
@@ -178,20 +204,17 @@ class Game():
         textRect.center = pos
         self.win.blit(textSurf, textRect)
 
-    # checks collision between sprites, removes projectiles which hit balls
+    # checks collision between sprites, removes projectiles which hit balls, returns score increment
     def checkCollisions(self):
         # dictionary with bubbles and projectiles which collided
         ballsHit = groupcollide(self.bubbles, self.projectiles, False, True)
         scoreAddition = 0
 
+        #hit bubbles which have collided with a projectile
         for bubble in ballsHit.keys():
-
-            # fix case when bubble is hit multiple times simultaneously
-            for hit in range(0, len(ballsHit[bubble]) - 1):
-                bubble.hit()
-
             newExplosion = bubble.hit()
 
+            #if bubble exploded, generate new projectiles
             if newExplosion != None:
                 scoreAddition += bubble.score * len(ballsHit[bubble])
                 self.bubbles.remove(bubble)
@@ -207,6 +230,7 @@ class Game():
 
         return scoreAddition
 
+    #update entities
     def update(self):
         # update bubbles, projectiles
         self.bubbles.update()
