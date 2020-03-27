@@ -34,7 +34,6 @@ def game(levels):
 
         #choose level to play
         while choosingLevel:
-            pygame.display.flip()
             if levelNotChosen:
                 game.writeToScreen(center, "What level would you like to play?", False)
                 game.writeToScreen((center[0], center[1] + 50), "Select from 1 to " + str(len(levels)), False)
@@ -53,7 +52,6 @@ def game(levels):
                         game.setLevel(int(level))
                         choosingLevel = False
                     else:
-                        print("bad level")
                         game.writeToScreen((center[0], center[1] - 50), "That level doesn't exist", False)
                         levelNotChosen = True
 
@@ -69,6 +67,7 @@ def game(levels):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+
 
 
 touchesLeft = 5
@@ -132,14 +131,7 @@ def parseLevels(file):
 
     return levels
 
-
-levels = parseLevels("Levels.txt")
-#
-#
-# for line in levels:
-#     print(line)
-
-game(levels)
+game(parseLevels("Levels.txt"))
 
 
 

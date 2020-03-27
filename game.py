@@ -116,6 +116,7 @@ class Game():
                     pygame.quit()
                     exit()
 
+                #choose algo to use
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         moves = ai.BFS()
@@ -130,7 +131,8 @@ class Game():
                         greedy = True
 
                     if len(moves) > self.touchesLeft:
-                        print(moves, self.touchesLeft)
+                        self.writeToScreen(center, "No solution exists for given moves :(", True)
+                        pygame.display.flip()
                         gameOver = True
 
                     #mode was chosen, game can start
@@ -157,13 +159,15 @@ class Game():
                         greedy = False
 
                     if len(moves) > self.touchesLeft:
+                        self.writeToScreen(center, "No solution exists for given moves :(", True)
+                        pygame.display.flip()
                         gameOver = True
 
-
-        waitBetweenMoves = False
-        self.update()
-        pygame.display.flip()
-        pygame.time.wait(1000)
+        if not gameOver:
+            waitBetweenMoves = False
+            self.update()
+            pygame.display.flip()
+            pygame.time.wait(1000)
 
         while (not gameOver):
             self.update()
@@ -202,11 +206,6 @@ class Game():
 
             # fill background
             self.win.fill((0, 0, 0))
-
-        if gameOver:
-            self.writeToScreen(center, "No solution for the given moves exist :(", True)
-            pygame.display.flip()
-
 
     # write text in the screen, if clearScreen=true, whole screen is wiped before writing
     def writeToScreen(self, pos, text, clearScreen):
