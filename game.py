@@ -130,6 +130,7 @@ class Game():
                         greedy = True
 
                     if len(moves) > self.touchesLeft:
+                        print(moves, self.touchesLeft)
                         gameOver = True
 
                     #mode was chosen, game can start
