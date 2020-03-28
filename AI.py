@@ -3,6 +3,7 @@ colNr = 5
 
 import numpy as np
 import copy
+import datetime
 
 
 class AI():
@@ -115,18 +116,30 @@ class AI():
             else:
                candidates.extend(newCandidates)
 
+    # depth first search, limited depth (technically a DLS - depth limited search)
     def dfs(self):
+        # start time
+        start = datetime.datetime.now()
+
+        # number of max touches (depth)
         limit = self.touchesLeft
+
+        # initial state
         node = [copy.deepcopy(self.grid), []]
+
+        # put root node in stack
         stack = [node]
+
+        # solution path
         path = []
 
         # to control depth
         SENTINEL = object()
 
+        num_nodes = 1
+
         while stack:
             node = stack.pop()
-            self.printPath(stack)
 
             if node == SENTINEL:
                 # finished this depth-level, go back one level
@@ -135,16 +148,22 @@ class AI():
 
             elif self.isSolution(node[0]):
                 path.append(node)
-                self.printPath(path)
+                # self.printPath(path)
+                print(node[1])
+                end = datetime.datetime.now()
+                time = end - start
+                size = len(node[1])
+                self.analysis(time, size, num_nodes)
                 return node[1]
 
             elif limit != 0:
-                # going one level deeper, must push sentinel
+                # going one level deeper, must push sentinel to mark level
                 limit -= 1
                 next_nodes = self.expand(node)
                 path.append(node)
                 stack.append(SENTINEL)
                 stack.extend(next_nodes)
+                num_nodes += len(next_nodes)
 
         print("No solution found")
 
@@ -219,3 +238,8 @@ class AI():
             print(movfin)
             return movfin
         self.greedy(new_state, movfin, toques)
+
+    def analysis(self, time, size, num_nodes):
+        now = datetime.datetime.now()
+        print(now.strftime("%Y-%m-%d %H:%M:%S: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" "),
+        print("in", size, "move(s). The search tree was expanded by",  num_nodes, "nodes.")
