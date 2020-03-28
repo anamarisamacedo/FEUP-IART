@@ -87,7 +87,7 @@ class AI():
         for p in path:
             print(p)
 
-    #returns all possible moves for given grid
+    #returns all possible moves and states/childrens for given grid
     def expand(self, node):
         next_nodes = []
 
@@ -150,39 +150,37 @@ class AI():
         print("No solution found")
 
     def iddfs_algorithm(self):
-
-        max_depth = self.touchesLeft +1
+        #maximum tree depth (number of possible touches at the current level)
+        max_depth = self.touchesLeft + 1
         #initial state
         state = copy.deepcopy(self.grid)
 
+        #call dfs algorithms for each maximum depth
         for depth in range(0, max_depth):
-            result = self.iddfs([[state, []]], depth)
+            result = self.iddfs([state, []], depth)
+            #result = [state,moves]
             if result is None:
                 continue
-            print(result[1])
+            #return moves
             return result[1]
 
     def iddfs(self, state_move_list, depth):
-        current_state = state_move_list[0][0]
-        moves = state_move_list[0][1]
+        #state_move_list = [state,moves to reach the state]
+        current_state = state_move_list[0]
+
         if (self.isSolution(current_state)):
-            return state_move_list[0]
-        if depth <= 0:
+            return state_move_list
+        if depth <= 0: #if reaches the maximum depth
             return None
 
-        for row in range(0, rowNr):
-            for col in range(0, colNr):
-                if self.validate_movement(row, col, current_state):
-                    children = self.execute_movement(current_state, row, col)
-                    all_moves = copy.deepcopy(moves)
-                    all_moves.append([row, col])
+        childrens = self.expand(state_move_list)
 
-                    state_move_list.insert(0, [children, all_moves])
+        for children in childrens:
+            #call the dfs algorithm for each children
+            result = self.iddfs(children, depth - 1)
 
-                    result = self.iddfs(state_move_list, depth - 1)
-
-                    if result is not None and self.isSolution(result[0]):
-                        return result
+            if result is not None and self.isSolution(result[0]):
+                return result
 
 
     def greedy_algorithm(self, heuristic):
