@@ -241,5 +241,5 @@ class AI():
 
     def analysis(self, time, size, num_nodes):
         now = datetime.datetime.now()
-        print(now.strftime("%Y-%m-%d %H:%M:%S: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" "),
+        print(now.strftime("%Y-%m-%d %H:%M: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" ")
         print("in", size, "move(s). The search tree was expanded by",  num_nodes, "nodes.")
