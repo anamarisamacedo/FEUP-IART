@@ -75,10 +75,6 @@ class AI():
     def evaluate_movement_levels(self, new_state):
         return np.sum(new_state)
 
-    #TODO: should do someting?
-    def evaluate_movement_score(self, new_state):
-        return
-
     #returns true if there aren't bubbles in the grid
     def isSolution(self, new_state):
         return np.sum(new_state) == 0
@@ -87,18 +83,19 @@ class AI():
         for p in path:
             print(p)
 
-    #returns all possible moves and states/childrens for given grid
+    #returns all possible moves, states/childrens and score for given grid
     def expand(self, node):
         next_nodes = []
 
         for row in range(0, rowNr):
             for col in range(0, colNr):
                 if self.validate_movement(row, col, node[0]):
+                    self.score = 0
                     new_grid = self.execute_movement(node[0], row, col)
                     new_moves = copy.deepcopy(node[1])
                     new_moves.append([row, col])
 
-                    next_nodes.append([new_grid, new_moves])
+                    next_nodes.append([new_grid, new_moves, self.score])
 
         return next_nodes
 
@@ -164,16 +161,17 @@ class AI():
             #return moves
             return result[1]
 
-    def iddfs(self, state_move_list, depth):
-        #state_move_list = [state,moves to reach the state]
-        current_state = state_move_list[0]
+    def iddfs(self, state_moves, depth):
+        #state_moves = [state,moves to reach the state]
+
+        current_state = state_moves[0]
 
         if (self.isSolution(current_state)):
-            return state_move_list
+            return state_moves
         if depth <= 0: #if reaches the maximum depth
             return None
 
-        childrens = self.expand(state_move_list)
+        childrens = self.expand(state_moves)
 
         for children in childrens:
             #call the dfs algorithm for each children
@@ -184,53 +182,44 @@ class AI():
 
 
     def greedy_algorithm(self, heuristic):
-        movfin = []
+        #initial state
         state = copy.deepcopy(self.grid)
 
         if(heuristic == "levels"):
-            return self.greedy_levels(state, movfin, self.touchesLeft)
+            return self.greedy_levels([state,[]], self.touchesLeft)
         elif(heuristic == "score"):
-            move = self.greedy_score(state, movfin, self.touchesLeft, self.score)
-            print(move)
-            return move
+            return self.greedy_score([state, []], self.touchesLeft, self.score)
 
-    def greedy_levels(self, state, movfin, toques):
+
+    def greedy_levels(self, state_moves, toques):
         aval = 1000
 
-        for row in range(0, rowNr):
-            for col in range(0, colNr):
-                if (self.validate_movement(row, col, state)):
-                    new_state = copy.deepcopy(self.execute_movement(state, row, col))
+        childrens = self.expand(state_moves)
 
-                    if (self.evaluate_movement_levels(new_state) < aval):
-                        best_state= new_state
-                        aval = self.evaluate_movement_levels(new_state)
-                        move = [row, col]
+        for children in childrens:
+            sum_levels = self.evaluate_movement_levels(children[0])
+            if ( sum_levels < aval):
+                best_children= children
+                aval = sum_levels
 
-        movfin.append(move)
         toques -= 1
-        if (toques == 0 or self.isSolution(best_state)):
-            return movfin
-        return self.greedy_levels(best_state, movfin, toques)
+        if (toques == 0 or self.isSolution(best_children[0])):
+            return best_children[1]
+        return self.greedy_levels(best_children, toques)
 
-    def greedy_score(self, state, movfin, toques, score):
+    def greedy_score(self, state_moves, toques, score):
         aval = 0
-        move = []
-        for row in range(0, rowNr):
-            for col in range(0, colNr):
 
-                if (self.validate_movement(row, col, state)):
-                    self.score=0
-                    new_state = copy.deepcopy(self.execute_movement(state, row, col))
-                    totalScore = self.score + score
-                    if (totalScore > aval):
-                        best_state = new_state
-                        aval = totalScore
-                        move = [row, col]
+        childrens = self.expand(state_moves)
 
-        movfin.append(move)
+        for children in childrens:
+            children_score = children[2]
+            totalScore = children_score + score
+            if (totalScore > aval):
+                best_children = children
+                aval = totalScore
+
         toques -= 1
-        if (toques == 0 or self.isSolution(best_state)):
-            print(aval)
-            return movfin
-        return self.greedy_score(best_state, movfin, toques, aval)
+        if (toques == 0 or self.isSolution(best_children[0])):
+            return best_children[1]
+        return self.greedy_score(best_children, toques, aval)
