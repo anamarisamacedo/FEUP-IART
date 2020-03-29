@@ -1,5 +1,8 @@
 Como iniciar o jogo:
 
+O projeto é feito na linguagem Python.
+Para iniciar o jogo deve-se executar o ficheiro main.py (na linha de comandos python main.py)
+Deve-se instalar o módulo pygame.
 
 Instruções para o jogo:
 
@@ -19,5 +22,4 @@ Ao carregar na opção do algoritmo Greedy vão aparecer opções de heurística
 
     Score Heuristic - Esta heurística baseia-se na pontuação total que se obtém após uma jogada.
                       O algoritmo escolhe o vizinho cujo resultado é maior.
-
 
