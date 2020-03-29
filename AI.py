@@ -11,6 +11,7 @@ class AI():
         self.grid = grid
         self.touchesLeft = touchesLeft
         self.score = 0
+        self.num_nodes_iddfs = 0
 
     #returns true if the next position for the projectile is valid
     def updateProjectile(self, projectile):
@@ -151,7 +152,7 @@ class AI():
                 end = datetime.datetime.now()
                 time = end - start
                 size = len(node[1])
-                self.analysis(time, size, num_nodes)
+                self.analysis(time, size, num_nodes,0)
                 return node[1]
 
             elif limit != 0:
@@ -166,18 +167,25 @@ class AI():
         print("No solution found")
 
     def iddfs_algorithm(self):
-        #maximum tree depth (number of possible touches at the current level)
-        max_depth = self.touchesLeft + 1
-        #initial state
-        state = copy.deepcopy(self.grid)
+        start = datetime.datetime.now()
 
-        #call dfs algorithms for each maximum depth
-        for depth in range(0, max_depth):
-            result = self.iddfs([state, []], depth)
-            #result = [state,moves]
+        max_depth = self.touchesLeft + 1  #maximum tree depth (number of possible touches at the current level)
+
+        state = copy.deepcopy(self.grid) #initial state
+
+        for depth in range(0, max_depth): #calls dfs algorithms for each maximum depth
+            self.num_nodes_iddfs += 1
+            result = self.iddfs([state, []], depth) #result = [state,moves]
+
             if result is None:
                 continue
-            #return moves
+            #for statistics
+            end = datetime.datetime.now()
+            time = end - start
+            size = len(result[1])
+            self.analysis(time, size, self.num_nodes_iddfs, 0)
+            # return moves
+            print(result[1])
             return result[1]
 
     def iddfs(self, state_moves, depth):
@@ -191,45 +199,59 @@ class AI():
             return None
 
         childrens = self.expand(state_moves)
-
+        self.num_nodes_iddfs += len(childrens)
         for children in childrens:
-            #call the dfs algorithm for each children
+            #calls the dfs algorithm for each children
             result = self.iddfs(children, depth - 1)
 
-            if result is not None and self.isSolution(result[0]):
-                return result
-
+            if result is not None and self.isSolution(result[0][0]):
+                    return result
 
     def greedy_algorithm(self, heuristic):
         #initial state
         state = copy.deepcopy(self.grid)
-
+        start = datetime.datetime.now()
         if(heuristic == "levels"):
-            return self.greedy_levels([state,[]], self.touchesLeft)
+            result = self.greedy_levels([state,[]], self.touchesLeft, 1)
+            end = datetime.datetime.now()
+            time = end - start
+            size = len(result[0][1])
+            num_nodes = result[1]
+            self.analysis(time, size, num_nodes, result[2])
+            return result[0][1]
         elif(heuristic == "score"):
-            return self.greedy_score([state, []], self.touchesLeft, self.score)
+            result = self.greedy_score([state, []], self.touchesLeft, self.score, 1)
+            end = datetime.datetime.now()
+            time = end - start
+            size = len(result[0][1])
+            num_nodes = result[1]
+            self.analysis(time, size, num_nodes, result[2])
+            return result[0][1]
 
 
-    def greedy_levels(self, state_moves, toques):
+    def greedy_levels(self, state_moves, toques, num_nodes):
         aval = 1000
 
         childrens = self.expand(state_moves)
-
+        num_nodes += len(childrens)
         for children in childrens:
             sum_levels = self.evaluate_movement_levels(children[0])
-            if ( sum_levels < aval):
+            if (sum_levels < aval):
                 best_children= children
                 aval = sum_levels
 
         toques -= 1
-        if (toques == 0 or self.isSolution(best_children[0])):
-            return best_children[1]
-        return self.greedy_levels(best_children, toques)
+        if (self.isSolution(best_children[0])):
+            return [best_children,num_nodes, 0]
+        if(toques == 0):
+            return [best_children, num_nodes, 1]
+        return self.greedy_levels(best_children, toques, num_nodes)
 
-    def greedy_score(self, state_moves, toques, score):
+    def greedy_score(self, state_moves, toques, score, num_nodes):
         aval = 0
 
         childrens = self.expand(state_moves)
+        num_nodes += len(childrens)
 
         for children in childrens:
             children_score = children[2]
@@ -239,11 +261,16 @@ class AI():
                 aval = totalScore
 
         toques -= 1
-        if (toques == 0 or self.isSolution(best_children[0])):
-            return best_children[1]
-        return self.greedy_score(best_children, toques, aval)
+        if (self.isSolution(best_children[0])):
+            return [best_children,num_nodes,0]
+        if(toques == 0):
+            return [best_children,num_nodes,1]
+        return self.greedy_score(best_children, toques, aval, num_nodes)
 
-    def analysis(self, time, size, num_nodes):
+    def analysis(self, time, size, num_nodes, won_lost):
         now = datetime.datetime.now()
-        print(now.strftime("%Y-%m-%d %H:%M: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" ")
+        if(won_lost == 0):
+            print(now.strftime("%Y-%m-%d %H:%M: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" ")
+        else:
+            print(now.strftime("%Y-%m-%d %H:%M: ") + "Lost puzzle: ", time.total_seconds(), "seconds", end=" ")
         print("in", size, "move(s). The search tree was expanded by", num_nodes, "nodes.")
