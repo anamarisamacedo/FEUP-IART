@@ -23,3 +23,7 @@ Ao carregar na opção do algoritmo Greedy vão aparecer opções de heurística
     Score Heuristic - Esta heurística baseia-se na pontuação total que se obtém após uma jogada.
                       O algoritmo escolhe o vizinho cujo resultado é maior.
 
+
+No modo humano, se o jogador perder o jogo, em qualquer nível, aparece a opção de ter uma dica do computador,
+em que este diz os movimentos que se devem fazer para solucionar o jogo.
+
