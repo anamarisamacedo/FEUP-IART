@@ -54,6 +54,9 @@ class Game():
     #logic for human mode
     def playHuman(self):
         gameOver = False
+        hint = False
+        ai = AI(self.startGrid, self.touchesLeft)
+
         while (not gameOver):
 
             self.update()
@@ -68,7 +71,6 @@ class Game():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         quit()
-
                     # check mouse click on bubble
                     if event.type == pygame.MOUSEBUTTONUP:
                         for bubble in self.bubbles:
@@ -85,14 +87,36 @@ class Game():
                     gameOver = True
 
                 elif self.touchesLeft <= 0:
-                    self.writeToScreen(center, "Game over :(", True)
                     gameOver = True
+                    hint = True
 
             # update whole screen
             pygame.display.flip()
 
             # fill background
             self.win.fill((0, 0, 0))
+
+        while(hint):
+            self.writeToScreen(center, "Game over :(", True)
+            self.writeToScreen((center[0] + 200, 20), "H - Hint", False)
+
+            for event in pygame.event.get():
+                # check mouse click on exit button
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_h:
+                        moves = ai.BFS()
+                        print(moves)
+                        self.writeToScreen(center, "HINT", True)
+                        self.writeToScreen((center[0], center[1] + 40), "[row, column]", False)
+                        position = 80
+                        for move in moves:
+                            self.writeToScreen((center[0], center[1] + position), str(move), False)
+                            position += 40
+
+            pygame.display.flip()
 
     #logic for computer mode
     def playComputer(self):
