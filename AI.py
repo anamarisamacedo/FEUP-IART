@@ -102,18 +102,36 @@ class AI():
         return next_nodes
 
     def BFS(self):
+        # start time
+        start = datetime.datetime.now()
+
+        # solution path
+        path = []
+
+        #nodes explored
+        num_nodes = 0
+
         # candidate = [grid, list of moves]
         candidates = [[copy.deepcopy(self.grid), []]]
 
         while True:
             candidate = candidates.pop(0)
-
+            num_nodes += 1
             newCandidates = self.expand(candidate)
 
             if self.isSolution(candidate[0]):
+                end = datetime.datetime.now()
+                time = end - start
+                self.analysis(time, len(candidate[1]), num_nodes, 0)
                 return candidate[1]
             else:
                candidates.extend(newCandidates)
+
+            if len(newCandidates) == 0:
+                end = datetime.datetime.now()
+                time = end - start
+                self.analysis(time, len(candidate[1]), num_nodes, 1)
+                return [[]]
 
     # depth first search, limited depth (technically a DLS - depth limited search)
     def dfs(self):
