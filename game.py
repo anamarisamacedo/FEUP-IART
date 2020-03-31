@@ -97,10 +97,14 @@ class Game():
                     pygame.display.flip()
                     moves = self.ai.iddfs_algorithm()
                     pos = 0
-                    for move in moves:
-                        self.writeToScreen((center[0], center[1] + pos), str(move), False)
+                    if type(moves) != None:
+                        self.writeToScreen(center, "No solution exists for the current state :(", False)
                         pygame.display.flip()
-                        pos += 40
+                    else:
+                        for move in moves:
+                            self.writeToScreen((center[0], center[1] + pos), str(move), False)
+                            pygame.display.flip()
+                            pos += 40
 
                     pygame.time.wait(5000)
 
