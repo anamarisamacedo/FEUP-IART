@@ -95,7 +95,7 @@ class Game():
                 if input == pygame.K_h:
                     self.win.fill((0, 0, 0))
                     pygame.display.flip()
-                    moves = self.ai.BFS()
+                    moves = self.ai.iddfs_algorithm()
                     pos = 0
                     for move in moves:
                         self.writeToScreen((center[0], center[1] + pos), str(move), False)
