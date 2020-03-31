@@ -283,7 +283,9 @@ class AI():
     def analysis(self, time, size, num_nodes, won_lost):
         now = datetime.datetime.now()
         if(won_lost == 0):
-            print(now.strftime("%Y-%m-%d %H:%M: ") + "Solved puzzle in", time.total_seconds(), "seconds", end=" ")
+            print(now.strftime("%Y-%m-%d %H:%M: ") + "Solved puzzle in " +  str(time.total_seconds()) +  " seconds " +
+                  "in " + str(size) + " move(s). The search tree was expanded by " + str(num_nodes) + " nodes.")
         else:
-            print(now.strftime("%Y-%m-%d %H:%M: ") + "Lost puzzle: ", time.total_seconds(), "seconds", end=" ")
-        print("in", size, "move(s). The search tree was expanded by", num_nodes, "nodes.")
+            print(now.strftime("%Y-%m-%d %H:%M: ") + "Lost puzzle in " +  str(time.total_seconds()) + " seconds " +
+                  "in " + str(size) + " move(s). The search tree was expanded by " + str(num_nodes) + " nodes.")
+        end = " "

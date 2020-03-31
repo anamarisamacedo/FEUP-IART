@@ -124,7 +124,7 @@ def parseLevels(file):
 
     for line in rawFile:
         if not wroteLevel:
-            newLevel.clear()
+            del newLevel[:]
             newLevel.append(int(line[-1:]))
             newLevel.append([])
             newLevel.append([])
