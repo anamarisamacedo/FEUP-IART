@@ -169,8 +169,6 @@ class AI():
 
             elif self.isSolution(node[0]):
                 path.append(node)
-                # self.printPath(path)
-                print(node[1])
                 end = datetime.datetime.now()
                 time = end - start
                 size = len(node[1])
@@ -207,7 +205,6 @@ class AI():
             size = len(result[1])
             self.analysis(time, size, self.num_nodes_iddfs, 0)
             # return moves
-            print(result[1])
             return result[1]
 
     def iddfs(self, state_moves, depth):
@@ -235,20 +232,14 @@ class AI():
         start = datetime.datetime.now()
         if(heuristic == "levels"):
             result = self.greedy_levels([state,[]], self.touchesLeft, 1)
-            end = datetime.datetime.now()
-            time = end - start
-            size = len(result[0][1])
-            num_nodes = result[1]
-            self.analysis(time, size, num_nodes, result[2])
-            return result[0][1]
         elif(heuristic == "score"):
             result = self.greedy_score([state, []], self.touchesLeft, self.score, 1)
-            end = datetime.datetime.now()
-            time = end - start
-            size = len(result[0][1])
-            num_nodes = result[1]
-            self.analysis(time, size, num_nodes, result[2])
-            return result[0][1]
+        end = datetime.datetime.now()
+        time = end - start
+        size = len(result[0][1])
+        num_nodes = result[1]
+        self.analysis(time, size, num_nodes, result[2])
+        return result[0][1]
 
 
     def greedy_levels(self, state_moves, toques, num_nodes):
