@@ -33,6 +33,7 @@ class Game():
                 if self.startGrid[j][i] > 0:
                     self.bubbles.add(Bubble((i, j), self.startGrid[j][i]))
 
+    #Recieves list of key presses to check for
     def checkInputs(self, options):
         # check mouse events
         for event in pygame.event.get():
@@ -46,6 +47,14 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key in options:
                     return event.key
+
+    def checkReturnToMenu(self):
+        while True:
+            self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
+            pygame.display.flip()
+
+            if self.checkInputs([pygame.K_y]):
+                return True
 
     #decrements clicked bubble's level, creates projectiles if the bubble explodes (if it's a level 1 bubble)
     def makeMove(self, bubble):
@@ -118,12 +127,8 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
-        while not playAgain and not hint:
-            self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
-            pygame.display.flip()
-
-            if self.checkInputs([pygame.K_y]):
-                return "Main menu"
+        if self.checkReturnToMenu():
+            return "Main menu"
 
 
         self.writeToScreen(center, "Game over :(", True)
@@ -271,12 +276,8 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
-        while True:
-            self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
-            pygame.display.flip()
-
-            if self.checkInputs([pygame.K_y]) == pygame.K_y:
-                return "Main menu"
+        if self.checkReturnToMenu():
+            return "Main menu"
 
 
     # write text in the screen, if clearScreen=true, whole screen is wiped before writing
