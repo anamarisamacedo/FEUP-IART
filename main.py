@@ -1,6 +1,7 @@
 from game import *
 from collections import deque
 
+
 # Project main loop
 def game(levels):
     game = Game(levels)
@@ -16,20 +17,21 @@ def game(levels):
             game.writeToScreen((center[0], center[1] + 30), "Press C to play in computer mode. ", False)
             pygame.display.flip()
 
-            #check mouse events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            input = game.checkInputs([pygame.K_h, pygame.K_c])
+            # check mouse events
+            if input == pygame.K_h:
+                human = True
+            if input == pygame.K_c:
+                computer = True
 
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_h:
-                        human = True
-                    if event.key == pygame.K_c:
-                        computer = True
+            if input == "quit":
+                pygame.quit()
 
-                    intro = False
-                    choosingLevel = True
-                    game.writeToScreen(center, "", True)
+            if (human or computer):
+                intro = False
+                choosingLevel = True
+                game.writeToScreen(center, "", True)
+
 
         levelNotChosen = True
 

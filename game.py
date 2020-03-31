@@ -2,12 +2,8 @@ from pygame.sprite import groupcollide
 from AI import *
 from bubble import *
 
-rowNr = 6
-colNr = 5
 windowWidth = 100*colNr
 windowHeight = 100*rowNr
-#window space reserved for score
-scoreVerticalSpace = 80
 center = (windowWidth/2, windowHeight/2)
 
 class Game():
@@ -37,6 +33,15 @@ class Game():
                 if self.startGrid[j][i] > 0:
                     self.bubbles.add(Bubble((i, j), self.startGrid[j][i]))
 
+    def checkInputs(self, options):
+        # check mouse events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "quit"
+
+            if event.type == pygame.KEYDOWN:
+                if event.key in options:
+                    return event.key
 
     #decrements clicked bubble's level, creates projectiles if the bubble explodes (if it's a level 1 bubble)
     def makeMove(self, bubble):
@@ -170,7 +175,7 @@ class Game():
         greedy = False
         moves = []
         waitingForSelection = True
-        ai = AI(self.startGrid, self.touchesLeft)
+        self.ai = AI(self.startGrid, self.touchesLeft)
 
         #Select AI mode
         while waitingForSelection:
@@ -189,13 +194,13 @@ class Game():
                 #choose algo to use
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
-                        moves = ai.BFS()
+                        moves = self.ai.BFS()
 
                     if event.key == pygame.K_b:
-                        moves = ai.dfs()
+                        moves = self.ai.dfs()
 
                     if event.key == pygame.K_c:
-                        moves = ai.iddfs_algorithm()
+                        moves = self.ai.iddfs_algorithm()
 
                     if event.key == pygame.K_d:
                         greedy = True
@@ -221,11 +226,11 @@ class Game():
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
-                        moves = ai.greedy_algorithm("levels")
+                        moves = self.ai.greedy_algorithm("levels")
                         greedy = False
 
                     if event.key == pygame.K_b:
-                        moves = ai.greedy_algorithm("score")
+                        moves = self.ai.greedy_algorithm("score")
                         greedy = False
 
                     if len(moves) > self.touchesLeft:

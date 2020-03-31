@@ -6,9 +6,6 @@ rowNr = 6
 colNr = 5
 scoreVerticalSpace = 80
 
-windowWidth = 100*colNr
-windowHeight = 100*rowNr
-
 class Bubble(pygame.sprite.Sprite):
     def __init__(self, pos, level):
         self.level = level
