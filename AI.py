@@ -4,6 +4,7 @@ colNr = 5
 import numpy as np
 import copy
 import datetime
+from collections import deque
 
 
 class AI():
@@ -112,11 +113,13 @@ class AI():
         num_nodes = 0
 
         # candidate = [grid, list of moves]
-        candidates = [[copy.deepcopy(self.grid), []]]
+        candidates = deque([[copy.deepcopy(self.grid), []]])
 
         while True:
-            candidate = candidates.pop(0)
+            candidate = candidates.popleft()
+
             num_nodes += 1
+
             newCandidates = self.expand(candidate)
 
             if self.isSolution(candidate[0]):

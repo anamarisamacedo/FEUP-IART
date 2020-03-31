@@ -253,7 +253,8 @@ class Game():
                 if len(self.bubbles) <= 0:
                     self.writeToScreen(center, "You won!", True)
                     gameOver = True
-
+                    break
+                    
                 elif self.touchesLeft <= 0 or len(moves) == 0:
                     self.writeToScreen(center, "Game over :(", True)
                     gameOver = True
