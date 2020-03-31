@@ -1,6 +1,6 @@
 import pygame
 
-velocity = 2
+velocity = 1.5
 maxLevel = 4
 rowNr = 6
 colNr = 5
