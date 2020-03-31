@@ -55,14 +55,29 @@ def game(levels):
                         game.writeToScreen((center[0], center[1] - 50), "That level doesn't exist", False)
                         levelNotChosen = True
 
-
+        selection = ""
         if(human):
-            game.playHuman()
+            while True:
+                selection = game.playHuman()
+                if selection == "Main menu":
+                    intro = run = True
+                    computer = human = choosingLevel = False
+                    break
+
+                if selection == "Play again":
+                    game = Game(levels)
+                    game.setLevel(int(level))
 
         elif(computer):
-            game.playComputer()
+            while True:
+                selection = game.playComputer()
+                if selection == "Main menu":
+                    intro = run = True
+                    computer = human = choosingLevel = False
+                    break
 
-        while True:
+
+        while selection != "Main menu":
             # check mouse events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

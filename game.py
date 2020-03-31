@@ -82,9 +82,11 @@ class Game():
 
             #check if game ended
             if len(self.projectiles) <= 0:
+                playAgain = False
                 if len(self.bubbles) <= 0:
                     self.writeToScreen(center, "You won!", True)
                     gameOver = True
+                    break
 
                 elif self.touchesLeft <= 0:
                     gameOver = True
@@ -96,10 +98,24 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
-        while(hint):
-            self.writeToScreen(center, "Game over :(", True)
-            self.writeToScreen((center[0] + 200, 20), "H - Hint", False)
+        while not playAgain and not hint:
+            self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
+            pygame.display.flip()
 
+            for event in pygame.event.get():
+                # check mouse click on exit button
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_y:
+                        return "Main menu"
+
+
+        self.writeToScreen(center, "Game over :(", True)
+        self.writeToScreen((center[0], center[1] + 100), "H - Hint", False)
+        self.writeToScreen((center[0], center[1] + 60), "Would you like to play again? (y/n)", False)
+        while(hint):
             for event in pygame.event.get():
                 # check mouse click on exit button
                 if event.type == pygame.QUIT:
@@ -108,15 +124,29 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_h:
                         moves = ai.BFS()
-                        print(moves)
+                        #print(moves)
                         self.writeToScreen(center, "HINT", True)
-                        self.writeToScreen((center[0], center[1] + 40), "[row, column]", False)
-                        position = 80
+                        self.writeToScreen((center[0], center[1] - 40), "[row, column]", True)
+                        self.writeToScreen((center[0], center[1]), "Solution: ", True)
+                        position = 40
+
                         for move in moves:
                             self.writeToScreen((center[0], center[1] + position), str(move), False)
                             position += 40
+                            pygame.display.flip()
+
+                        self.writeToScreen((center[0], center[1] + position), "Would you like to play again? (y/n)", False)
+
+
+                    if event.key == pygame.K_y:
+                        return "Play again"
+
+                    if event.key == pygame.K_n:
+                        pygame.quit()
+                        quit()
 
             pygame.display.flip()
+
 
     #logic for computer mode
     def playComputer(self):
@@ -189,9 +219,12 @@ class Game():
 
         if not gameOver:
             waitBetweenMoves = False
-            self.update()
+            self.win.fill((0, 0, 0))
             pygame.display.flip()
+            self.update()
             pygame.time.wait(1000)
+
+        print(moves)
 
         while (not gameOver):
             self.update()
@@ -230,6 +263,20 @@ class Game():
 
             # fill background
             self.win.fill((0, 0, 0))
+
+        while True:
+            self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                # check mouse click on exit button
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_y:
+                        return "Main menu"
+
 
     # write text in the screen, if clearScreen=true, whole screen is wiped before writing
     def writeToScreen(self, pos, text, clearScreen):
@@ -278,8 +325,9 @@ class Game():
         self.score += self.checkCollisions()
 
         # draw all entities
-        self.writeToScreen((center[0], 20), "Score: " + str(self.score), True)
+        self.writeToScreen((center[0], 20), "Score: " + str(self.score), False)
         self.writeToScreen((center[0], windowHeight + 50), "Touches left: " + str(self.touchesLeft), False)
         self.bubbles.draw(self.win)
         self.projectiles.draw(self.win)
+        pygame.display.flip()
 
