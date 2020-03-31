@@ -51,10 +51,14 @@ class Game():
     def checkReturnToMenu(self):
         while True:
             self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
+            self.writeToScreen((center[0], center[1] + 80), "Q - Quit game", False)
             pygame.display.flip()
 
-            if self.checkInputs([pygame.K_y]):
-                return True
+            input = self.checkInputs([pygame.K_y, pygame.K_q])
+            if input == pygame.K_y : return True
+            elif input == pygame.K_q:
+                pygame.quit()
+                quit()
 
     #decrements clicked bubble's level, creates projectiles if the bubble explodes (if it's a level 1 bubble)
     def makeMove(self, bubble):
@@ -127,7 +131,7 @@ class Game():
             # fill background
             self.win.fill((0, 0, 0))
 
-        if self.checkReturnToMenu():
+        if not hint and self.checkReturnToMenu():
             return "Main menu"
 
 
