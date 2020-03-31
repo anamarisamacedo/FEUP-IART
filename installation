@@ -1,4 +1,0 @@
-sudo apt install python-pip
-pip install pygame
-pip install numpy
-python main.py
