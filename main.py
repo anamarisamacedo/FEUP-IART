@@ -24,9 +24,6 @@ def game(levels):
             if input == pygame.K_c:
                 computer = True
 
-            if input == "quit":
-                pygame.quit()
-
             if (human or computer):
                 intro = False
                 choosingLevel = True

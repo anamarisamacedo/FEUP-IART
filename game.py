@@ -37,7 +37,11 @@ class Game():
         # check mouse events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return "quit"
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                return pygame.mouse.get_pos()
 
             if event.type == pygame.KEYDOWN:
                 if event.key in options:
@@ -71,35 +75,29 @@ class Game():
 
             # avoid clicking before move ends
             if len(self.projectiles) <= 0 and self.touchesLeft > 0:
-                # check mouse events
 
-                #check all mouse events
-                for event in pygame.event.get():
-                    # check mouse click on exit button
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        quit()
-                    # check mouse click on bubble
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        for bubble in self.bubbles:
-                            #if a bubble was clicked
-                            if bubble.rect.collidepoint(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]):
-                                self.makeMove(bubble)
-                                self.touchesLeft -= 1
-                                break
+                # check mouse/kbd events
+                input = self.checkInputs([pygame.K_h])
 
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_h:
-                            self.win.fill((0, 0, 0))
-                            pygame.display.flip()
-                            moves = self.ai.BFS()
-                            pos = 0
-                            for move in moves:
-                                self.writeToScreen((center[0], center[1] + pos), str(move), False)
-                                pygame.display.flip()
-                                pos += 40
+                if input == pygame.K_h:
+                    self.win.fill((0, 0, 0))
+                    pygame.display.flip()
+                    moves = self.ai.BFS()
+                    pos = 0
+                    for move in moves:
+                        self.writeToScreen((center[0], center[1] + pos), str(move), False)
+                        pygame.display.flip()
+                        pos += 40
 
-                            pygame.time.wait(5000)
+                    pygame.time.wait(5000)
+
+                elif input != None:
+                    for bubble in self.bubbles:
+                        #if a bubble was clicked
+                        if bubble.rect.collidepoint(input[0], input[1]):
+                            self.makeMove(bubble)
+                            self.touchesLeft -= 1
+                            break
 
 
             #check if game ended
@@ -124,47 +122,38 @@ class Game():
             self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
             pygame.display.flip()
 
-            for event in pygame.event.get():
-                # check mouse click on exit button
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_y:
-                        return "Main menu"
+            if self.checkInputs([pygame.K_y]):
+                return "Main menu"
 
 
         self.writeToScreen(center, "Game over :(", True)
         self.writeToScreen((center[0], center[1] + 100), "H - Hint", False)
         self.writeToScreen((center[0], center[1] + 60), "Would you like to play again? (y/n)", False)
         while(hint):
-            for event in pygame.event.get():
-                # check mouse click on exit button
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_h:
-                        moves = self.solution
-                        self.writeToScreen(center, "HINT", True)
-                        self.writeToScreen((center[0], center[1] - 40), "[row, column]", True)
-                        self.writeToScreen((center[0], center[1]), "Solution: ", True)
-                        position = 40
 
-                        for move in moves:
-                            self.writeToScreen((center[0], center[1] + position), str(move), False)
-                            position += 40
-                            pygame.display.flip()
+            input = self.checkInputs([pygame.K_h, pygame.K_y, pygame.K_n])
 
-                        self.writeToScreen((center[0], center[1] + position), "Would you like to play again? (y/n)", False)
+            if input == pygame.K_h:
+                moves = self.solution
+                self.writeToScreen(center, "HINT", True)
+                self.writeToScreen((center[0], center[1] - 40), "[row, column]", True)
+                self.writeToScreen((center[0], center[1]), "Solution: ", True)
+                position = 40
+
+                for move in moves:
+                    self.writeToScreen((center[0], center[1] + position), str(move), False)
+                    position += 40
+                    pygame.display.flip()
+
+                self.writeToScreen((center[0], center[1] + position), "Would you like to play again? (y/n)", False)
 
 
-                    if event.key == pygame.K_y:
-                        return "Play again"
+            if input == pygame.K_y:
+                return "Play again"
 
-                    if event.key == pygame.K_n:
-                        pygame.quit()
-                        quit()
+            if input == pygame.K_n:
+                pygame.quit()
+                quit()
 
             pygame.display.flip()
 
@@ -179,39 +168,38 @@ class Game():
 
         #Select AI mode
         while waitingForSelection:
+            waitingForSelection = False
             self.writeToScreen(center, "Press A to BFS algorithm", True)
             self.writeToScreen((center[0], center[1] + 40), "Press B to DFS algorithm", False)
             self.writeToScreen((center[0], center[1] + 80), "Press C to IDDFS algorithm", False)
             self.writeToScreen((center[0], center[1] + 120), "Press D to Greedy algorithm", False)
             pygame.display.flip()
 
-            #check mouse events
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
+            input = self.checkInputs([pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d])
 
-                #choose algo to use
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
-                        moves = self.ai.BFS()
+            #choose algo to use
+            if input == pygame.K_a:
+                moves = self.ai.BFS()
 
-                    if event.key == pygame.K_b:
-                        moves = self.ai.dfs()
+            elif input == pygame.K_b:
+                moves = self.ai.dfs()
 
-                    if event.key == pygame.K_c:
-                        moves = self.ai.iddfs_algorithm()
+            elif input == pygame.K_c:
+                moves = self.ai.iddfs_algorithm()
 
-                    if event.key == pygame.K_d:
-                        greedy = True
+            elif input == pygame.K_d:
+                greedy = True
 
-                    if len(moves) > self.touchesLeft:
-                        self.writeToScreen(center, "No solution exists for given moves :(", True)
-                        pygame.display.flip()
-                        gameOver = True
+            else:
+                waitingForSelection = True
 
-                    #mode was chosen, game can start
-                    waitingForSelection = False
+
+            #check if algo returned solution with more moves than allowed
+            if len(moves) > self.touchesLeft:
+                self.writeToScreen(center, "No solution exists for given moves :(", True)
+                pygame.display.flip()
+                gameOver = True
+
 
         #choose heuristic for greedy mode
         while(greedy):
@@ -219,24 +207,21 @@ class Game():
             self.writeToScreen((center[0], center[1] + 40), "Press B to Score Heuristic", False)
             pygame.display.flip()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
+            input = self.checkInputs([pygame.K_a, pygame.K_b])
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
-                        moves = self.ai.greedy_algorithm("levels")
-                        greedy = False
+            if input == pygame.K_a:
+                moves = self.ai.greedy_algorithm("levels")
+                greedy = False
 
-                    if event.key == pygame.K_b:
-                        moves = self.ai.greedy_algorithm("score")
-                        greedy = False
+            if input == pygame.K_b:
+                moves = self.ai.greedy_algorithm("score")
+                greedy = False
 
-                    if len(moves) > self.touchesLeft:
-                        self.writeToScreen(center, "No solution exists for given moves :(", True)
-                        pygame.display.flip()
-                        gameOver = True
+            #check if algo returned solution with more moves than allowed
+            if len(moves) > self.touchesLeft:
+                self.writeToScreen(center, "No solution exists for given moves :(", True)
+                pygame.display.flip()
+                gameOver = True
 
         if not gameOver:
             waitBetweenMoves = False
@@ -290,14 +275,8 @@ class Game():
             self.writeToScreen((center[0], center[1] + 40), "Y - Go back to main menu", False)
             pygame.display.flip()
 
-            for event in pygame.event.get():
-                # check mouse click on exit button
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_y:
-                        return "Main menu"
+            if self.checkInputs([pygame.K_y]) == pygame.K_y:
+                return "Main menu"
 
 
     # write text in the screen, if clearScreen=true, whole screen is wiped before writing
