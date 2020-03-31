@@ -24,6 +24,8 @@ class Game():
     def setLevel(self, level):
         self.startGrid = self.levels[level-1][1]
         self.touchesLeft = self.levels[level-1][2]
+        self.solution = self.levels[level-1][3]
+
         self.createBubbles()
 
     #create list of bubbles
@@ -33,11 +35,13 @@ class Game():
             for j in range(0, len(self.startGrid)):
                 # dont create level 0 balls
                 if self.startGrid[j][i] > 0:
-                    self.bubbles.add(Bubble((100 * i + 50, 100 * j + scoreVerticalSpace), self.startGrid[j][i]))
+                    self.bubbles.add(Bubble((i, j), self.startGrid[j][i]))
 
 
     #decrements clicked bubble's level, creates projectiles if the bubble explodes (if it's a level 1 bubble)
     def makeMove(self, bubble):
+        self.ai.grid = self.ai.clickBubble(self.ai.grid, (bubble.pos[1], bubble.pos[0]))
+        self.ai.touchesLeft -= 1
         # if bubble is clicked, make it get hit and decrement touchesLeft
         newExplosion = bubble.hit()
 
@@ -55,8 +59,7 @@ class Game():
     def playHuman(self):
         gameOver = False
         hint = False
-        ai = AI(self.startGrid, self.touchesLeft)
-
+        self.ai = AI(self.startGrid, self.touchesLeft)
         while (not gameOver):
 
             self.update()
@@ -79,6 +82,20 @@ class Game():
                                 self.makeMove(bubble)
                                 self.touchesLeft -= 1
                                 break
+
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_h:
+                            self.win.fill((0, 0, 0))
+                            pygame.display.flip()
+                            moves = self.ai.BFS()
+                            pos = 0
+                            for move in moves:
+                                self.writeToScreen((center[0], center[1] + pos), str(move), False)
+                                pygame.display.flip()
+                                pos += 40
+
+                            pygame.time.wait(5000)
+
 
             #check if game ended
             if len(self.projectiles) <= 0:
@@ -123,8 +140,7 @@ class Game():
                     quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_h:
-                        moves = ai.BFS()
-                        #print(moves)
+                        moves = self.solution
                         self.writeToScreen(center, "HINT", True)
                         self.writeToScreen((center[0], center[1] - 40), "[row, column]", True)
                         self.writeToScreen((center[0], center[1]), "Solution: ", True)
@@ -254,7 +270,7 @@ class Game():
                     self.writeToScreen(center, "You won!", True)
                     gameOver = True
                     break
-                    
+
                 elif self.touchesLeft <= 0 or len(moves) == 0:
                     self.writeToScreen(center, "Game over :(", True)
                     gameOver = True
@@ -326,8 +342,10 @@ class Game():
         self.score += self.checkCollisions()
 
         # draw all entities
-        self.writeToScreen((center[0], 20), "Score: " + str(self.score), False)
+        self.writeToScreen((center[0] - 100, 20), "Score: " + str(self.score), False)
         self.writeToScreen((center[0], windowHeight + 50), "Touches left: " + str(self.touchesLeft), False)
+        self.writeToScreen((center[0] + 100, 20), "H - Hint", False)
+
         self.bubbles.draw(self.win)
         self.projectiles.draw(self.win)
         pygame.display.flip()

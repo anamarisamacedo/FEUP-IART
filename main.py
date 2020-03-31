@@ -118,7 +118,7 @@ def parseLevels(file):
     levels = []
     rawFile = []
     newLevel = []
-    wroteLevel = wroteTouches = False
+    wroteLevel = wroteTouches = wroteSol = False
 
     with open(file) as my_file:
         rawFile = my_file.read().splitlines()
@@ -129,21 +129,26 @@ def parseLevels(file):
             newLevel.append(int(line[-1:]))
             newLevel.append([])
             newLevel.append([])
+            newLevel.append([])
             wroteLevel = True
-            continue
 
-        if not wroteTouches:
+        elif not wroteTouches:
             newLevel[2] = int(line)
             wroteTouches = True
-            continue
 
-        if len(newLevel[1]) < 6:
+        elif not wroteSol:
+            sol = line.split(';')
+            for move in sol:
+                newLevel[3].append(list(map(int, move.split(","))))
+            wroteSol = True
+
+        elif len(newLevel[1]) < 6:
             newLine = list(map(int, line.split()))
             newLevel[1].append(newLine)
 
             if len(newLevel[1]) == 6:
                 levels.append(copy.deepcopy(newLevel))
-                wroteLevel = wroteTouches = False
+                wroteLevel = wroteTouches = wroteSol = False
 
     return levels
 

@@ -1,6 +1,7 @@
 rowNr = 6
 colNr = 5
 
+
 import numpy as np
 import copy
 import datetime

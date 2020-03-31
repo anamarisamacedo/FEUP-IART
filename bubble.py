@@ -2,11 +2,18 @@ import pygame
 
 velocity = 1
 maxLevel = 4
+rowNr = 6
+colNr = 5
+scoreVerticalSpace = 80
+
+windowWidth = 100*colNr
+windowHeight = 100*rowNr
 
 class Bubble(pygame.sprite.Sprite):
     def __init__(self, pos, level):
         self.level = level
         self.score = 10
+        self.pos = pos
         if level > maxLevel: self.level = maxLevel
 
         # sprite
@@ -15,7 +22,7 @@ class Bubble(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
 
-        self.rect.center = pos
+        self.rect.center = (pos[0]*100 + 50, 100*pos[1] + scoreVerticalSpace)
 
     # returns projectiles if bubble dies
     def hit(self):
