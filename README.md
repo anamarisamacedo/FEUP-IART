@@ -37,4 +37,4 @@ Se o jogador quiser pedir dicas a meio do jogo, o computador gera uma solução/
 
 ## AI a resolver um nivel
 
-<p align="center"><img src="https://imgur.com/lF8Ehb7"></p>
+<p align="center"><img src="https://i.imgur.com/lF8Ehb7.gif"></p>
