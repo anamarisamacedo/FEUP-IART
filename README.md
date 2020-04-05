@@ -1,6 +1,10 @@
 # FEUP-IART
 Bubble blast implementation in python, along with an AI that finds a level's best solution
 
+## AI a resolver um nivel
+
+<img src="https://i.imgur.com/lF8Ehb7.gif">
+
 ### Como iniciar o jogo: 
 
 O projeto é feito na linguagem Python.
@@ -34,7 +38,3 @@ Se o jogador quiser pedir dicas a meio do jogo, o computador gera uma solução/
 
 ## Aspeto do jogo
 ![Level Screenshot](/assets/LevelScreenshot.png)
-
-## AI a resolver um nivel
-
-<p align="center"><img src="https://i.imgur.com/lF8Ehb7.gif"></p>
