@@ -97,7 +97,7 @@ class Game():
                     pygame.display.flip()
                     moves = self.ai.iddfs_algorithm()
                     pos = 0
-                    if type(moves) != None:
+                    if type(moves) == None:
                         self.writeToScreen(center, "No solution exists for the current state :(", False)
                         pygame.display.flip()
                     else:
@@ -206,7 +206,8 @@ class Game():
             else:
                 waitingForSelection = True
 
-
+            print(len(moves))
+            print(self.touchesLeft)
             #check if algo returned solution with more moves than allowed
             if len(moves) > self.touchesLeft:
                 self.writeToScreen(center, "No solution exists for given moves :(", True)

@@ -129,7 +129,7 @@ class AI():
                 self.analysis(time, len(candidate[1]), num_nodes, 0)
                 return candidate[1]
             else:
-               candidates.extend(newCandidates)
+                candidates.extend(newCandidates)
 
             if len(newCandidates) == 0:
                 end = datetime.datetime.now()
